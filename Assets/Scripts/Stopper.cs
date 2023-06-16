@@ -1,4 +1,5 @@
 ﻿using System;
+using Fall_Friends.Controllers;
 using UnityEngine;
 
 namespace Fall_Friends.Colliders
@@ -10,6 +11,7 @@ namespace Fall_Friends.Colliders
             if (other.CompareTag("Player"))
             {
                 other.GetComponent<Rigidbody>().velocity = Vector3.zero;
+                other.GetComponent<DemoPlayer>().Status = PlayerStatus.Defensing;
             }
         }
 
@@ -21,6 +23,14 @@ namespace Fall_Friends.Colliders
                 rb.mass = rb.mass * 1.0001f;
                 var trans = rb.transform;
                 trans.localScale = trans.localScale * 1.0001f;
+            }
+        }
+
+        private void OnTriggerExit(Collider other)
+        {
+            if (other.CompareTag("Player"))
+            {
+                other.GetComponent<DemoPlayer>().Status = PlayerStatus.Idle;
             }
         }
     }
