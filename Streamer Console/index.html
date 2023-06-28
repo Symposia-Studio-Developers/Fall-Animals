@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>加入游戏</title>
+</head>
+<body>
+    <h1>加入游戏</h1>
+    <label for="playerId">玩家ID:</label>
+    <input type="text" id="playerId">
+    <button onclick="addPlayer()">加入游戏</button>
+
+    <script>
+        function addPlayer() {
+            var playerId = document.getElementById("playerId").value;
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    alert("玩家已成功加入游戏！");
+                }
+            };
+            xhttp.open("POST", "http://localhost:3000/addPlayer", true);
+            xhttp.setRequestHeader("Content-type", "application/json");
+            var data = { "playerId": playerId };
+            xhttp.send(JSON.stringify(data));
+        }
+    </script>
+</body>
+</html>
