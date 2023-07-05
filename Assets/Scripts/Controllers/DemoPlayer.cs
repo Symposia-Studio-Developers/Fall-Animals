@@ -14,6 +14,11 @@ namespace Fall_Friends.Controllers
 
     public class DemoPlayer : MonoBehaviour
     {
+
+        public string playerId;// unique playerId parsed from tiktok
+        //note, exposing playerId as a public variable now to set it in Unity's inspector for testing and initial setup, 
+        //encapsulate it and provide methods to access and modify it later in production for safety. make playerId private and provide a public getter and setter.
+
         public PlayerStatus Status
         {
             get => _status;

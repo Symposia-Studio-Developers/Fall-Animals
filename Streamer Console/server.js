@@ -7,7 +7,20 @@ const app = express();
 const timestamp=Date.now();
 app.use(bodyParser.json());
 app.use(cors());
-app.post('/addPlayer', (req, res) => {
+
+app.use(express.static(__dirname));
+
+dir = __dirname + '/pages';
+
+app.get('/', (req, res) => {
+    res.sendFile(dir + '/main.html');
+});
+
+app.get('/testGame', function(req, res) {
+    res.sendFile(dir + '/index.html'); // send the html file in response to GET requests to '/'
+});
+
+app.post('/testGame', (req, res) => {
     const playerId = req.body.playerId;
     const data = { 
         "playerId": playerId,
