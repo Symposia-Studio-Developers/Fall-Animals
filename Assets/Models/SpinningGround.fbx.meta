@@ -3,7 +3,42 @@ guid: 0fc595e7d39e58c4ea093566248b9199
 ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Inner
+    second: {fileID: 2100000, guid: dd373817a8897ce418f9a174c7c0adae, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MIddleGround
+    second: {fileID: 2100000, guid: 9b01053bdaf1a914ba238a27bdec416c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: lambert1
+    second: {fileID: 2100000, guid: 2267417cd98de9d49acde1b87b0c52b9, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: lambert2
+    second: {fileID: 2100000, guid: 89a97aa7201a72b4fb3de4b074ecc821, type: 2}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: InnerRingShape_color
+    second: {fileID: 2800000, guid: 39c6d54cfc400dc4b888cc9b9e7b6747, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: OuterRingShape_color
+    second: {fileID: 2800000, guid: 3b95cbaff13bf384e8fd18ae85880166, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: OuterRingShape_color_1
+    second: {fileID: 2800000, guid: a4bafdcdc2b785d41b82f9e45b5d8aa0, type: 3}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -35,7 +70,7 @@ ModelImporter:
     isReadable: 0
   meshes:
     lODScreenPercentages: []
-    globalScale: 1
+    globalScale: 100
     meshCompression: 0
     addColliders: 0
     useSRGBMaterialColor: 1
@@ -66,7 +101,7 @@ ModelImporter:
     secondaryUVMinLightmapResolution: 40
     secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
-    useFileScale: 1
+    useFileScale: 0
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
@@ -88,7 +123,7 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    globalScale: 1
+    globalScale: 100
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0
