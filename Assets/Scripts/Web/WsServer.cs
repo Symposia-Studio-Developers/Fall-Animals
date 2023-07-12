@@ -17,7 +17,7 @@ public class WsServer : WebSocketBehavior
         if (e.Data == "getPlayers")
         {
             List<DemoPlayer> players = GetPlayers();  // replace with your actual method to get player list
-            List<string> playerIds = players.Select(player => player.playerId).ToList();
+            List<string> playerIds = players.Select(player => player.GetPlayerId()).ToList();
             
             // Convert to JSON
             string json = JsonUtility.ToJson(playerIds);
