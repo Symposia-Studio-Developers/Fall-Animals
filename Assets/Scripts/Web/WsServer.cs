@@ -3,11 +3,15 @@ using WebSocketSharp;
 using WebSocketSharp.Server;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
+using UnityEditor;
 
 using Fall_Friends.Controllers;
 
 public class WsServer : WebSocketBehavior
 {
+    private int requestID = 0;
+    
     protected override void OnMessage(MessageEventArgs e)
     {
         // this method is called when a message is received
@@ -24,6 +28,13 @@ public class WsServer : WebSocketBehavior
 
             // Send the player IDs back
             Send(json);
+        }
+        else {
+            var sw = new StreamWriter(Directory.GetCurrentDirectory() + @"\Assets\Requests\" + requestID + @".txt", false);
+            requestID++;
+            sw.Write(e.Data);
+            sw.Close();
+            AssetDatabase.Refresh();
         }
         // Can add more commands here to handle other requests
     }

@@ -58,7 +58,7 @@ namespace Fall_Friends.Controllers
 
         private void Update()
         {
-            Debug.Log(Status);
+            //Debug.Log(Status);
             if (Status == PlayerStatus.Idle)
             {
                 _idleToDashTimer += Time.deltaTime;
