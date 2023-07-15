@@ -1,10 +1,20 @@
 using UnityEngine;
 using WebSocketSharp.Server;
+using System.Collections.Generic;
 
 public class WebSocketServer : MonoBehaviour
 {
     WebSocketSharp.Server.WebSocketServer wssv;
-    public GameObject playerPrefab; 
+    
+    [System.Serializable]
+    public class Request
+    {
+        public string action;
+        public string playerId;
+        public string danmu;
+    }
+    
+    public Queue<Request> myRequestQueue = new Queue<Request>();
 
     void Start()
     {
@@ -28,16 +38,8 @@ public class WebSocketServer : MonoBehaviour
     // The method that's called when the event is fired
     private void OnDataReceived(string data)
     {
-        Debug.Log("Received data in MonoBehaviour: " + data);
-        
-        // Handle the received data to spawn game objects
-        if (data == "getPlayers")
-    {
-        // Instantiate a new Player object at position (0, 0, 0) with no rotation
-        GameObject newPlayer = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
-
-        // can now do whatever with the newPlayer object
-        // For example, add it to a list of player objects, etc.
-    }
+        Debug.Log("Received request in MonoBehaviour: " + data);
+        Request newRequest = JsonUtility.FromJson<Request>(data);
+        myRequestQueue.Enqueue(newRequest);
     }
 }

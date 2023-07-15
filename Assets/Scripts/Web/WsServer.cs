@@ -4,8 +4,6 @@ using WebSocketSharp.Server;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.IO;
-using UnityEditor;
 
 using Fall_Friends.Controllers;
 
@@ -21,7 +19,6 @@ public class WsServer : WebSocketBehavior
     {
         // this method is called when a message is received
         Debug.Log("Message Received: " + e.Data);
-        OnDataReceived?.Invoke(e.Data);
 
         // Handle received data based on the game logic
         if (e.Data == "getPlayers")
@@ -36,11 +33,7 @@ public class WsServer : WebSocketBehavior
             Send(json);
         }
         else {
-            var sw = new StreamWriter(Directory.GetCurrentDirectory() + @"\Assets\Requests\" + requestID + @".txt", false);
-            requestID++;
-            sw.Write(e.Data);
-            sw.Close();
-            AssetDatabase.Refresh();
+            OnDataReceived?.Invoke(e.Data);
         }
         // Can add more commands here to handle other requests
     }
