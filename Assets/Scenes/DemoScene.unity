@@ -266,6 +266,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77353577974d341ac85d6a982c5954fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerManager: {fileID: 1031212253}
 --- !u!4 &783891175
 Transform:
   m_ObjectHideFlags: 0
@@ -414,6 +415,53 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1031212252
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1031212254}
+  - component: {fileID: 1031212253}
+  m_Layer: 0
+  m_Name: Players
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1031212253
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1031212252}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f286aa23f09ee244b9225f22050dd8c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerDatas: []
+  PlayerPrefab: {fileID: 6366057690701761577, guid: d97e816de745bc941bf22523b4b13f37, type: 3}
+  PlayersParent: {fileID: 1031212252}
+--- !u!4 &1031212254
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1031212252}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.6100001, z: 2.36}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1103082711
 GameObject:
@@ -751,9 +799,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1ec90ccac694c07ba85c3afbfcae4e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerPrefab: {fileID: 6366057690701761577, guid: d97e816de745bc941bf22523b4b13f37, type: 3}
   CenterPosition: {x: 0, y: 0, z: 0}
   PowerCoefficient: 20
+  players: {fileID: 1031212252}
   wssvGameObject: {fileID: 783891173}
 --- !u!4 &1965314926
 Transform:

@@ -5,10 +5,9 @@ namespace Fall_Friends.Manager
 {
     public class GameManager : Singleton<GameManager>
     {
-        public GameObject PlayerPrefab;
-
         public Vector3 CenterPosition;
         public float PowerCoefficient = 1.0f;
+        public GameObject players;
         
         [SerializeField] GameObject wssvGameObject;
         WebSocketServer webSocketServer;
@@ -22,7 +21,7 @@ namespace Fall_Friends.Manager
                 webSocketServer.myRequestQueue.Dequeue();
                 if (currRequest.action == "addPlayer") {
                     Debug.Log(currRequest.playerId + ": Add player");
-                    AddNewPlayer();
+                    players.GetComponent<PlayerManager>().addNewPlayer(currRequest.playerId);
                     // add code here
                     
                 }
@@ -48,16 +47,5 @@ namespace Fall_Friends.Manager
                 }
             }
         }
-
-        public void AddNewPlayer()
-        {
-            float xPosition = Random.Range(-9.0f, 9.0f);
-            float zPosition = Random.Range(-9.0f, 9.0f);
-            float yPosition = Random.Range(1.0f, 3.0f);
-            Vector3 vec3 = new Vector3(xPosition, yPosition, zPosition);
-            Debug.Log(vec3);
-            Instantiate(PlayerPrefab, vec3, Quaternion.identity);
-        }
-
     }
 }

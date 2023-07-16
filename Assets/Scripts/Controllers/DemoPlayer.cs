@@ -19,6 +19,22 @@ namespace Fall_Friends.Controllers
         //note, exposing playerId as a public variable now to set it in Unity's inspector for testing and initial setup, 
         //encapsulate it and provide methods to access and modify it later in production for safety. make playerId private and provide a public getter and setter.
 
+        public string getPlayerId()
+        {
+            return playerId;
+        }
+        
+        public void setPlayerId(string playerId)
+        {
+            this.playerId = playerId;
+        }
+
+        public int getScore()
+        {
+            // method to calculate score from player's status
+            return 0;
+        }
+
         public PlayerStatus Status
         {
             get => _status;
