@@ -15,20 +15,30 @@ namespace Fall_Friends.Controllers
 
     public class DemoPlayer : MonoBehaviour
     {
-        public bool AlwaysActive = false; // testing purpose
-        public float MaxIdleSpeed;
-        public float MaxActiveSpeed;
-        public float LikeSpeedOffset;
-        public float MaxLikeDuration;
-        public float PushRadius;
-        public float PushForce;
-        public float PushCoolDown;
-        public float PullCoolDown;
-        public float MaxFreezeTime;
+        [Header("Push and Pull")]
+        public readonly float PushRadius;
+        public readonly float PushForce;
         public float ThrowArcHeight;
         public float ThrowForce;
 
+        [Header("Move Speed")]
+        public readonly float MaxIdleSpeed;
+        public readonly float MaxActiveSpeed;
+
+        [Header("Timer")]
+        public readonly float MaxLikeDuration;
+        public readonly float MaxFreezeTime;
+        public readonly float PushCoolDown;
+        public readonly float PullCoolDown;
+
+        [Header("Debug")]
+        public bool AlwaysActive = false; // testing purpose
         public Material WithCrownMat;
+        [SerializeField] private string _playerId;// unique playerId parsed from tiktok
+        //note, exposing playerId as a public variable now to set it in Unity's inspector for testing and initial setup, 
+        //encapsulate it and provide methods to access and modify it later in production for safety. make playerId private and provide a public getter and setter.
+
+        [SerializeField] private GameObject _crown;
 
         public PlayerStatus Status
         {
@@ -49,30 +59,32 @@ namespace Fall_Friends.Controllers
                 _status = value;
             }
         }
-
-        [SerializeField] private string _playerId;// unique playerId parsed from tiktok
-        //note, exposing playerId as a public variable now to set it in Unity's inspector for testing and initial setup, 
-        //encapsulate it and provide methods to access and modify it later in production for safety. make playerId private and provide a public getter and setter.
-
-        [SerializeField] private GameObject _crown;
         
-        private PlayerStatus _status;
-        private Rigidbody _body;
-        private float _speed;
-        private float _likeTimer = 0.0f;
-        private Vector3 _moveDir;
+        #region Timer Variables
         private float _pushTimer = 0.0f;
         private float _pullTimer = 0.0f;
         private float _freezeTimer = 0.0f;
+        private float _likeTimer = 0.0f;
+        #endregion
 
-        private bool _holdingCrown = false;
-        private bool _onCenter = false;
+        #region Unity Components Variables
+        private Rigidbody _body;
+        #endregion
+
+        private PlayerStatus _status;
+        
+        #region Move Variables
+        private float _speed;
+        private Vector3 _moveDir;
+        #endregion
+
         
         // for debug purpose
         private Vector3 collision = Vector3.zero; 
         private Vector3 pushedObject = Vector3.zero;
         private Material originalMat;
 
+        #region Unity Functions
         private void Start() {
             _body = GetComponent<Rigidbody>();
             Status = PlayerStatus.Idle;
@@ -88,10 +100,6 @@ namespace Fall_Friends.Controllers
                     Status = PlayerStatus.Idle;
                 }
             }
-
-            if (_holdingCrown && _onCenter) {
-                Status = PlayerStatus.Defensing;
-            } 
 
             if (Status == PlayerStatus.Freeze) {
                 _freezeTimer += Time.deltaTime;
@@ -137,7 +145,9 @@ namespace Fall_Friends.Controllers
             Gizmos.color = Color.cyan;
             Gizmos.DrawWireSphere(pushedObject, 1.0f);
         }
+        #endregion
 
+        #region Push and Pull
         private void PushOtherPlayer () {
             Collider[] colliders = Physics.OverlapSphere(transform.position, PushRadius);
             DemoPlayer nearest = null;
@@ -202,6 +212,9 @@ namespace Fall_Friends.Controllers
             return null;
         }
 
+        #endregion
+
+        #region Utilities
         public string GetPlayerId() {
             return _playerId;
         }
@@ -214,6 +227,6 @@ namespace Fall_Friends.Controllers
             _likeTimer = 0.0f;
             Status = PlayerStatus.DashingToCenter;
         }
-
+        #endregion
     }
 }
