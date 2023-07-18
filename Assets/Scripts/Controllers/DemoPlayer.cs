@@ -38,12 +38,6 @@ namespace Fall_Friends.Controllers
         //note, exposing playerId as a public variable now to set it in Unity's inspector for testing and initial setup, 
         //encapsulate it and provide methods to access and modify it later in production for safety. make playerId private and provide a public getter and setter.
 
-        public int getScore()
-        {
-            // method to calculate score from player's status
-            return 0;
-        }
-
         [SerializeField] private GameObject _crown;
 
         public PlayerStatus Status
@@ -75,26 +69,30 @@ namespace Fall_Friends.Controllers
 
         #region Unity Components Variables
         private Rigidbody _body;
+        private Animator _animator;
         #endregion
 
         private PlayerStatus _status;
         
-        #region Move Variables
+        #region Movement Variables
         private float _speed;
         private Vector3 _moveDir;
         #endregion
 
         
         // for debug purpose
+        #region Debugging Variables
         private Vector3 collision = Vector3.zero; 
         private Vector3 pushedObject = Vector3.zero;
         private Material originalMat;
+        #endregion
 
         #region Unity Functions
         private void Start() {
             _body = GetComponent<Rigidbody>();
             Status = PlayerStatus.Idle;
             // originalMat = GetComponent<Renderer>().material;
+            _animator = GetComponent<Animator>();
         }
 
         private void Update() {
@@ -229,9 +227,14 @@ namespace Fall_Friends.Controllers
             _playerId = playerId;
         }
 
-        public void ResetTimer () {
+        public void ResetTimer() {
             _likeTimer = 0.0f;
             Status = PlayerStatus.DashingToCenter;
+        }
+
+        public int getScore() {
+            // method to calculate score from player's status
+            return 0;
         }
         #endregion
     }
