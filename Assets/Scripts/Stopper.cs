@@ -6,8 +6,6 @@ namespace Fall_Friends.Colliders
 {
     public class Stopper : MonoBehaviour
     {
-        private bool _hasPlayerStanding = false;
-        [SerializeField] private GameObject _crownPrefab;
 
         private void Update() {
             
@@ -16,7 +14,6 @@ namespace Fall_Friends.Colliders
         private void OnCollisionEnter(Collision other) {
             if (other.gameObject.CompareTag("Player")) {
                 other.gameObject.GetComponent<DemoPlayer>().Status = PlayerStatus.Defensing;
-                _hasPlayerStanding = true;
             }
         }
 
@@ -35,7 +32,6 @@ namespace Fall_Friends.Colliders
             {
                 DemoPlayer dp = other.gameObject.GetComponent<DemoPlayer>();
                 dp.Status = PlayerStatus.Idle;
-                _hasPlayerStanding = false;
             }
         }
     }

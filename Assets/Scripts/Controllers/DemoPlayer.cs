@@ -16,20 +16,20 @@ namespace Fall_Friends.Controllers
     public class DemoPlayer : MonoBehaviour
     {
         [Header("Push and Pull")]
-        public readonly float PushRadius;
-        public readonly float PushForce;
-        public float ThrowArcHeight;
-        public float ThrowForce;
+        public float PushRadius = 1.5f;
+        public float PushForce = 20f;
+        public float ThrowArcHeight = 2f;
+        public float ThrowForce = 2f;
 
         [Header("Move Speed")]
-        public readonly float MaxIdleSpeed;
-        public readonly float MaxActiveSpeed;
+        public float MaxIdleSpeed = 3f;
+        public float MaxActiveSpeed = 5f;
 
         [Header("Timer")]
-        public readonly float MaxLikeDuration;
-        public readonly float MaxFreezeTime;
-        public readonly float PushCoolDown;
-        public readonly float PullCoolDown;
+        public float MaxLikeDuration = 10f;
+        public float MaxFreezeTime = 3f;
+        public float PushCoolDown = 2f;
+        public float PullCoolDown = 2f;
 
         [Header("Debug")]
         public bool AlwaysActive = false; // testing purpose
@@ -37,6 +37,12 @@ namespace Fall_Friends.Controllers
         [SerializeField] private string _playerId;// unique playerId parsed from tiktok
         //note, exposing playerId as a public variable now to set it in Unity's inspector for testing and initial setup, 
         //encapsulate it and provide methods to access and modify it later in production for safety. make playerId private and provide a public getter and setter.
+
+        public int getScore()
+        {
+            // method to calculate score from player's status
+            return 0;
+        }
 
         [SerializeField] private GameObject _crown;
 
@@ -46,9 +52,9 @@ namespace Fall_Friends.Controllers
             set
             {
                 if (value == PlayerStatus.Defensing) {
-                    GetComponent<Renderer>().material = WithCrownMat; // TODO: DEBUG PURPOSE
+                    // GetComponent<Renderer>().material = WithCrownMat; // TODO: DEBUG PURPOSE
                 } else {
-                    GetComponent<Renderer>().material = originalMat; // TODO: DEBUG PURPOSE
+                    // GetComponent<Renderer>().material = originalMat; // TODO: DEBUG PURPOSE
                     if (value == PlayerStatus.Idle) {
                     _speed = MaxIdleSpeed;
                     } else if (value == PlayerStatus.DashingToCenter) {
@@ -88,11 +94,11 @@ namespace Fall_Friends.Controllers
         private void Start() {
             _body = GetComponent<Rigidbody>();
             Status = PlayerStatus.Idle;
-            originalMat = GetComponent<Renderer>().material;
+            // originalMat = GetComponent<Renderer>().material;
         }
 
         private void Update() {
-            Debug.Log(gameObject.name + ": " + Status + "; " + transform.parent);
+            // Debug.Log(gameObject.name + ": " + Status + "; " + transform.parent);
 
             if (!AlwaysActive && Status != PlayerStatus.Idle) {
                 _likeTimer += Time.deltaTime;
