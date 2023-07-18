@@ -48,6 +48,6 @@ app.post('/testGame', (req, res) => {
     });
 });
 
-app.listen(3000, () => {
+app.listen(3001, () => {
     console.log('服务器已启动，正在监听端口 3000');
 });

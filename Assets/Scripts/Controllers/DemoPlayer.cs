@@ -99,9 +99,19 @@ namespace Fall_Friends.Controllers
 
         private void FixedUpdate()
         {
-            // Give Players Velocities here
-            if (Status == PlayerStatus.DashingToCenter)
+
+            if (_body == null)
             {
+                Debug.LogError("Body is null");
+            }
+            if (GameManager.Instance == null)
+            {
+                Debug.LogError("GameManager instance is null");
+            }
+    
+            if (_body != null && GameManager.Instance != null && Status == PlayerStatus.DashingToCenter)
+            {
+    
                 Vector3 centerPosition = GameManager.Instance.CenterPosition;
                 Vector3 direction = (centerPosition - transform.position).normalized;
                 direction.y = 0;
