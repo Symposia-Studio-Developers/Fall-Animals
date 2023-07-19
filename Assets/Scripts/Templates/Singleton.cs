@@ -4,17 +4,36 @@ namespace Fall_Friends.Templates
 {
     public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
     {
-        public static T Instance = null;
-
-        private void Awake()
+        private static T _instance;
+        
+        public static T Instance
         {
-            if (Instance != null && Instance != this)
+            get
             {
-                Destroy(gameObject);
+                if (_instance == null)
+                {
+                    _instance = FindObjectOfType<T>();
+                    if (_instance == null)
+                    {
+                        GameObject singleton = new GameObject();
+                        _instance = singleton.AddComponent<T>();
+                        singleton.name = typeof(T).ToString() + " (Singleton)";
+                    }
+                }
+                return _instance;
+            }
+        }
+
+        protected virtual void Awake()
+        {
+            if (_instance == null)
+            {
+                _instance = this as T;
+                DontDestroyOnLoad(this.gameObject);
             }
             else
             {
-                Instance = GetComponent<T>();
+                Destroy(gameObject);
             }
         }
     }

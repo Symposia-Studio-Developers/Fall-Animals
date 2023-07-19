@@ -136,6 +136,14 @@ namespace Fall_Friends.Controllers
         }
 
         private void FixedUpdate() {
+            if (_body == null)
+            {
+                Debug.LogError("Body is null");
+            }
+            if (GameManager.Instance == null)
+            {
+                Debug.LogError("GameManager instance is null");
+            }
             transform.position += _moveDir * _speed * Time.fixedDeltaTime;
         }
 
