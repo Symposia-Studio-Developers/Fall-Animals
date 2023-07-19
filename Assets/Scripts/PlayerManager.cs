@@ -31,14 +31,14 @@ public class PlayerManager : MonoBehaviour
         Vector3 vec3 = new Vector3(xPosition, yPosition, zPosition);
         GameObject newPlayer = Instantiate(PlayerPrefab, vec3, Quaternion.identity, PlayersParent.transform);
         DemoPlayer playerData = newPlayer.GetComponent<DemoPlayer>();
-        playerData.setPlayerId(playerId);
+        playerData.SetPlayerId(playerId);
         playerDatas.Add(playerData);
     }
     
     public void deletePlayer(string playerId)
     {
         for (int i = 0; i < playerDatas.Count; i++) {
-            if (playerDatas[i].getPlayerId() == playerId) playerDatas.RemoveAt(i);
+            if (playerDatas[i].GetPlayerId() == playerId) playerDatas.RemoveAt(i);
         }
     }
     
@@ -46,7 +46,7 @@ public class PlayerManager : MonoBehaviour
     {
         Debug.Log("CalledGetRank");
         rankPlayers();
-        List<string> playerIds = playerDatas.Select(player => player.playerId).ToList();
+        List<string> playerIds = playerDatas.Select(player => player.GetPlayerId()).ToList();
         Debug.Log(playerIds.Count);
         var data = new { playerIds = playerIds };
         return JsonConvert.SerializeObject(data);
