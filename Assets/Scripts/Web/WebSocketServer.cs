@@ -2,6 +2,7 @@ using UnityEngine;
 using WebSocketSharp;
 using System.Collections.Generic;
 using System.Collections.Concurrent; // Added for ConcurrentQueue
+using System.Collections; // Added for IEnumerator
 
 public class WebSocketServer : MonoBehaviour
 {
@@ -28,9 +29,26 @@ public class WebSocketServer : MonoBehaviour
     public PlayerManager playerManager;
     public ConcurrentQueue<Request> myRequestQueue = new ConcurrentQueue<Request>(); // Replaced Queue with ConcurrentQueue
 
+
+    // The Coroutine FetchPlayerIDs goes here:
+    IEnumerator FetchPlayerIDs() {
+    while (true) {
+        if (ws != null && ws.IsAlive) {
+            ws.Send(JsonUtility.ToJson(new Request { action = "getPlayers" }));
+        }
+        yield return new WaitForSeconds(30f); // Fetch every 5 seconds
+    }
+}
+
+
     void Start()
     {
-        ws = new WebSocket("ws://54.159.171.208:8080"); // EC2 Public IP
+        //ws = new WebSocket("ws://54.159.171.208:8080"); // EC2 Public IP
+        //ws = new WebSocket("ws://localhost:8080"); //local testing
+        ws = new WebSocket("ws://symposiastudio.com:8080");
+
+        // Start the coroutine
+        StartCoroutine(FetchPlayerIDs());
 
         ws.OnOpen += (sender, e) =>
         {
@@ -68,15 +86,15 @@ public class WebSocketServer : MonoBehaviour
         return;
     }
 
-    Debug.Log("Raw Message Received from " + ((WebSocket)sender).Url + ", Data : " + message); // changed e.Data to message
+    Debug.Log("Raw Message Received from " + ((WebSocket)sender).Url + ", Data : " + message);
 
     try
     {
-        RequestCheck requestCheck = JsonUtility.FromJson<RequestCheck>(message); // changed e.Data to message
+        RequestCheck requestCheck = JsonUtility.FromJson<RequestCheck>(message);
 
         if (requestCheck == null || requestCheck.action == null)
         {
-            Debug.Log("Raw data: " + message); // changed e.Data to message
+            Debug.Log("Raw data: " + message);
             Debug.LogError("The incoming data is invalid or does not contain all the required keys.");
             return;
         }
@@ -84,17 +102,25 @@ public class WebSocketServer : MonoBehaviour
     catch (System.Exception ex)
     {
         Debug.LogError("Failed to parse the incoming data into a RequestCheck object: " + ex.Message);
-        Debug.LogError("Incoming data was: " + message); // changed e.Data to message
+        Debug.LogError("Incoming data was: " + message);
         return;
     }
 
     try
     {
-        Request newRequest = JsonUtility.FromJson<Request>(message); // changed e.Data to message
+        Request newRequest = JsonUtility.FromJson<Request>(message);
         Debug.Log("Parsed Request: " + newRequest.action + ", " + newRequest.playerId);
 
-        if (newRequest != null) // Check if newRequest is not null before enqueueing
+        if (newRequest != null)
         {
+            // Check if the action is 'getPlayers'
+            if (newRequest.action == "getPlayers")
+            {
+                // You might want to add handling for the list of players here
+                // For example, you might want to print the list of players to the console:
+                Debug.Log("List of players received: " + newRequest.playerId);
+            }
+
             myRequestQueue.Enqueue(newRequest);
         }
         else
@@ -105,9 +131,10 @@ public class WebSocketServer : MonoBehaviour
     catch (System.Exception ex)
     {
         Debug.LogError("Failed to parse the incoming data into a Request object: " + ex.Message);
-        Debug.LogError("Failed Data: " + message); // changed e.Data to message
+        Debug.LogError("Failed Data: " + message);
     }
 };
+
 
 
         ws.ConnectAsync();
@@ -120,6 +147,7 @@ public class WebSocketServer : MonoBehaviour
 
     void OnDestroy()
     {
+        StopCoroutine(FetchPlayerIDs());
         ws.Close();
     }
 }
