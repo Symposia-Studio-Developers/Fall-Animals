@@ -15,6 +15,8 @@ public class WebSocketServer : MonoBehaviour
         public string playerId;
         public string danmu;
         public string client;
+        public string giftName;
+        public string repeatCount;
     }
 
     [System.Serializable]
@@ -44,8 +46,8 @@ public class WebSocketServer : MonoBehaviour
     void Start()
     {
         //ws = new WebSocket("ws://54.159.171.208:8080"); // EC2 Public IP
-        ws = new WebSocket("ws://localhost:8080"); //local testing
-        //ws = new WebSocket("wss://symposiastudio.com/streamer-console");
+        // ws = new WebSocket("ws://localhost:8080"); //local testing
+        ws = new WebSocket("wss://symposiastudio.com/streamer-console");
 
         // Start the coroutine
         //StartCoroutine(FetchPlayerIDs());
@@ -64,7 +66,7 @@ public class WebSocketServer : MonoBehaviour
 
         
 
-        // New: handle binary data, woc the web socket sharp receives binary data, woc i debugged for two days!!
+        // New: handle binary data, woc the web socket sharp receives binary data, woc i debugged for two days!! :) It's weird for them to use that
         ws.OnMessage += (sender, e) =>
         {
         //Debug.Log("OnMessage event triggered.");
@@ -122,7 +124,7 @@ public class WebSocketServer : MonoBehaviour
                 }
 
                 // Check if a player has joined
-                if (newRequest.action == "addPlayer" or newRequest.action == "addPlayerSC" or newRequest.action == "addBot") {
+                if (newRequest.action == "addPlayer" || newRequest.action == "addPlayerSC" || newRequest.action == "addBot") {
                 Debug.Log("Player: " + newRequest.playerId + " joined");
                 }
 
@@ -144,8 +146,6 @@ public class WebSocketServer : MonoBehaviour
                 // Check if a player has sent a gift
                 if (newRequest.action == "gift") {
                 Debug.Log("Player: " + newRequest.playerId + " sent gift: " + newRequest.giftName + " x " + newRequest.repeatCount);
-                }
-                }
                 }
 
                 myRequestQueue.Enqueue(newRequest);
