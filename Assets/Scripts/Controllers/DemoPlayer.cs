@@ -1,25 +1,26 @@
 ﻿using System;
-using Fall_Friends.Manager;
 using UnityEngine;
+using Fall_Friends.States;
+using System.Collections.Generic;
+using System.Collections;
 using Random = UnityEngine.Random;
+using Fall_Friends.Manager;
+using UnityEngine.Events;
 
 namespace Fall_Friends.Controllers
 {
-    public enum PlayerStatus
+    public class DemoPlayer : BaseAI
     {
-        Idle = 0,
-        DashingToCenter = 1,
-        Defensing = 2,
-        Freeze = 3,
-    }
+        #region Public/Editable Variables
 
-    public class DemoPlayer : MonoBehaviour
-    {
+        [Header("Ground Check")]
+        [SerializeField] private LayerMask whatIsGround;
+        [SerializeField] private Transform groundCheck;
+        [SerializeField] private float groundCheckRadius = 0.3f;
+
         [Header("Push and Pull")]
-        public float PushRadius = 1.5f;
-        public float PushForce = 20f;
-        public float ThrowArcHeight = 2f;
-        public float ThrowForce = 2f;
+        public float PushPullRadius = 1.5f;
+        public float PushForce = 25f;
 
         [Header("Move Speed")]
         public float MaxIdleSpeed = 3f;
@@ -28,133 +29,104 @@ namespace Fall_Friends.Controllers
         [Header("Timer")]
         public float MaxLikeDuration = 10f;
         public float MaxFreezeTime = 3f;
-        public float PushCoolDown = 2f;
-        public float PullCoolDown = 2f;
+        public float PushCoolDown = 4f;
+        public float PullCoolDown = 4f;
+
+        [Header("Events")]
+        [Space]
+
+        public UnityEvent OnLandEvent;
 
         [Header("Debug")]
-        public bool AlwaysActive = false; // testing purpose
-        public Material WithCrownMat;
         [SerializeField] private string _playerId;// unique playerId parsed from tiktok
         //note, exposing playerId as a public variable now to set it in Unity's inspector for testing and initial setup, 
         //encapsulate it and provide methods to access and modify it later in production for safety. make playerId private and provide a public getter and setter.
-
-        [SerializeField] private GameObject _crown;
-
-        public PlayerStatus Status
-        {
-            get => _status;
-            set
-            {
-                if (value == PlayerStatus.Defensing) {
-                    // GetComponent<Renderer>().material = WithCrownMat; // TODO: DEBUG PURPOSE
-                } else {
-                    // GetComponent<Renderer>().material = originalMat; // TODO: DEBUG PURPOSE
-                    if (value == PlayerStatus.Idle) {
-                    _speed = MaxIdleSpeed;
-                    } else if (value == PlayerStatus.DashingToCenter) {
-                        _speed = MaxActiveSpeed;
-                    }
-                }
-                
-                _status = value;
-            }
-        }
-        
-        #region Timer Variables
-        private float _pushTimer = 0.0f;
-        private float _pullTimer = 0.0f;
-        private float _freezeTimer = 0.0f;
-        private float _likeTimer = 0.0f;
+        public bool IsActive = false;
         #endregion
 
-        #region Unity Components Variables
-        private Rigidbody _body;
+        #region Variables
         private Animator _animator;
+        private Rigidbody _rb;
         #endregion
 
-        private PlayerStatus _status;
-        
-        #region Movement Variables
-        private float _speed;
-        private Vector3 _moveDir;
-        #endregion
-
-        
-        // for debug purpose
-        #region Debugging Variables
-        private Vector3 collision = Vector3.zero; 
-        private Vector3 pushedObject = Vector3.zero;
-        private Material originalMat;
-        #endregion
 
         #region Unity Functions
-        private void Start() {
-            _body = GetComponent<Rigidbody>();
-            Status = PlayerStatus.Idle;
-            // originalMat = GetComponent<Renderer>().material;
+        protected override void Start() {
+            currentState = new IdleState(this, MaxIdleSpeed);
+
+            availableStates = new Dictionary<Type, BaseState>() {
+                {typeof(IdleState), currentState}, 
+                {typeof(DashingState), new DashingState(this, MaxLikeDuration, PullCoolDown, MaxActiveSpeed)}, 
+                {typeof(DefendingState), new DefendingState(this, MaxLikeDuration, PushCoolDown, PushForce, PushPullRadius)},
+                {typeof(FrozenState), new FrozenState(this, MaxFreezeTime)}
+            };
+
             _animator = GetComponent<Animator>();
+            _rb = GetComponent<Rigidbody>();
+
+            if (IsActive) SwitchState(typeof(DashingState)); 
         }
 
-        private void Update() {
-            // Debug.Log(gameObject.name + ": " + Status + "; " + transform.parent);
+        protected override void FixedUpdate()
+        {
+            base.FixedUpdate();
 
-            if (!AlwaysActive && Status != PlayerStatus.Idle) {
-                _likeTimer += Time.deltaTime;
-                if (_likeTimer > MaxLikeDuration) {
-                    Status = PlayerStatus.Idle;
+            // check whether the player is on the ground
+            bool wasGrounded = Grounded;
+		    Grounded = false;
+            Collider[] colliders = Physics.OverlapSphere(groundCheck.position, groundCheckRadius, whatIsGround);
+            for (int i = 0; i < colliders.Length; i++) {
+                if (colliders[i].gameObject != gameObject) {
+                    Grounded = true;
+                    if (!wasGrounded) {
+                        _animator.SetBool("Falling", false);
+                    }
                 }
             }
-
-            if (Status == PlayerStatus.Freeze) {
-                _freezeTimer += Time.deltaTime;
-                if (_freezeTimer >= MaxFreezeTime) {
-                    _freezeTimer = 0.0f;
-                    Status = PlayerStatus.Idle;
-                }
-                _moveDir = Vector3.zero;
-            } else {
-                if (Status == PlayerStatus.Defensing) {
-                    if (_pushTimer < PushCoolDown) {
-                        _pushTimer += Time.deltaTime;
-                    } else {
-                        _pushTimer = 0.0f;
-                        PushOtherPlayer();
-                    }
-                } else if (Status == PlayerStatus.DashingToCenter) {
-                    if (_pullTimer < PullCoolDown) {
-                        _pullTimer += Time.deltaTime;
-                    } else {
-                        _pullTimer = 0.0f;
-                        ThrowOtherPlayer();
-                    }
-                }
-
-                Vector3 _center_position = GameManager.Instance.CenterPosition;
-                _moveDir = (_center_position - new Vector3(transform.position.x, _center_position.y, transform.position.z));
-                _moveDir = Vector3.ClampMagnitude(_moveDir, 1);
-            } 
         }
 
-        private void FixedUpdate() {
-            transform.position += _moveDir * _speed * Time.fixedDeltaTime;
+        private void OnCollisionEnter(Collision other) 
+        {
+            if (other.gameObject.CompareTag("MiddleGround")) 
+            {
+                StartCoroutine(SwitchToDefendingStateHelper());
+            }
         }
 
-        private void OnDrawGizmos() {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(transform.position, PushRadius);
-
-            Gizmos.color = Color.green;
-            Gizmos.DrawWireSphere(collision, 1.0f);
-
-            Gizmos.color = Color.cyan;
-            Gizmos.DrawWireSphere(pushedObject, 1.0f);
+        private void OnCollisionStay(Collision other)
+        {
+            if (other.gameObject.CompareTag("MiddleGround"))
+            {
+                _rb.mass = _rb.mass * 1.0001f;
+                var trans = _rb.transform;
+                trans.localScale = trans.localScale * 1.0001f;
+            }
+            else if (other.gameObject.CompareTag("Ring")) 
+            {
+                transform.SetParent(other.gameObject.transform);
+            }
         }
+
+        private void OnCollisionExit(Collision other)
+        {
+            if (other.gameObject.CompareTag("MiddleGround"))
+            {
+                SwitchState(typeof(IdleState));
+            }
+            else if (other.gameObject.CompareTag("Ring")) 
+            {
+                transform.SetParent(null);
+            }
+        }
+
         #endregion
 
-        #region Push and Pull
-        private void PushOtherPlayer () {
-            Collider[] colliders = Physics.OverlapSphere(transform.position, PushRadius);
-            DemoPlayer nearest = null;
+        #region Push and Pull Utilities
+        public DemoPlayer GetNearestPlayer() {
+            Collider[] colliders = Physics.OverlapSphere(transform.position, PushPullRadius);
+            if (colliders.Length == 0) return null; // no nearby players
+
+            DemoPlayer nearest = null; // otherwise, find the nearest
             float nearDist = float.PositiveInfinity;
             foreach (var collider in colliders)
             {
@@ -168,54 +140,71 @@ namespace Fall_Friends.Controllers
                     }
                 }
             }
-            
-            if (nearest != null) {
-                pushedObject = nearest.transform.position;
-                Debug.Log("NEARBY PLAYER NAME: " + nearest.gameObject.name);
-                
-                Vector3 forceDirection = nearest.transform.position - transform.position;
-                nearest.GetComponent<Rigidbody>().AddForce(forceDirection.normalized * PushForce, ForceMode.Impulse);
-
-                nearest.Status = PlayerStatus.Freeze;
-            } else {
-                Debug.Log("Dancing~!!");
-            }
+            return nearest;
         }
 
-        private void ThrowOtherPlayer () {
-            DemoPlayer otherPlayer = GetClosestPlayer(); 
+        public DemoPlayer GetNearestPlayerFacingFront() {
+            Collider[] colliders = Physics.OverlapSphere(transform.position, PushPullRadius);
+            if (colliders.Length == 0) return null;
 
-            if (otherPlayer != null) {
-                Vector3 throwDir = transform.position - otherPlayer.transform.position;
-                Vector3 throwForceVec = throwDir.normalized + Vector3.up*4;
-                Rigidbody otherPlayerRB = otherPlayer.GetComponent<Rigidbody>();
-                otherPlayerRB.AddForce(throwForceVec * 5,  ForceMode.Impulse);
-                otherPlayer.Status = PlayerStatus.Freeze;
-            }
-        }
+            Vector3 mgrPos = GameManager.Instance.transform.position;
+            float playerManagerDistance = (transform.position - mgrPos).sqrMagnitude;
 
-        private DemoPlayer GetClosestPlayer() {
-            // Find the direction of the ray
-            Vector3 centerPosition = GameManager.Instance.CenterPosition;
-            Vector3 direction = centerPosition - transform.position;
-            direction.y = transform.position.y; 
-            direction = direction.normalized;
-
-            var ray = new Ray(transform.position, direction);
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit, 3)) { // can use layermask
-                GameObject hitObject = hit.transform.gameObject;
-                DemoPlayer otherPlayer = hitObject.GetComponent<DemoPlayer>();
-                if (hitObject.CompareTag("Player") && otherPlayer != this) { 
-                    Debug.Log("Pulling Another Player");
-                    collision = hit.point;
-                    Debug.DrawLine(this.transform.position, hit.point, Color.red);
-                    return otherPlayer;
+            DemoPlayer nearest = null;
+            float nearDist = float.PositiveInfinity;
+            foreach (var collider in colliders) {
+                DemoPlayer otherPlayer = collider.GetComponent<DemoPlayer>();
+                if (otherPlayer != null && otherPlayer != this) {
+                    float otherPlayerManagerDistance = (otherPlayer.transform.position - mgrPos).sqrMagnitude;
+                    if (otherPlayerManagerDistance < playerManagerDistance) {
+                        Vector3 offset = transform.position - otherPlayer.transform.position;
+                        float thisDist = offset.sqrMagnitude;
+                        if (thisDist < nearDist) {
+                            nearDist = thisDist;
+                            nearest = otherPlayer;
+                        }
+                    }
                 }
+                
             }
-            return null;
+            return nearest;
+        }
+        #endregion
+
+        #region Animations
+        public void PlayPushAnimation() 
+        {
+            StartCoroutine(PushAnimationHelper());
         }
 
+        IEnumerator PushAnimationHelper() 
+        {
+            _animator.SetBool("Pushing", true);
+            yield return new WaitForSeconds(Time.deltaTime * 2); // pause for one frame
+            _animator.SetBool("Pushing", false);
+        }
+
+        public void PlayPullAnimation() 
+        {
+            StartCoroutine(PullAnimationHelper());
+        }
+
+        IEnumerator PullAnimationHelper()
+        {
+            _animator.SetBool("Pulling", true);
+            yield return new WaitForSeconds(Time.deltaTime * 2); // pause for one frame
+            _animator.SetBool("Pulling", false);
+        }
+        #endregion
+
+        #region Helper Functions
+        IEnumerator SwitchToDefendingStateHelper ()
+        {   
+            // for temporary debug purpose
+            float randomWaitTime = Random.Range(0.5f, 2.0f);
+            yield return new WaitForSeconds(randomWaitTime);
+            SwitchState(typeof(DefendingState));
+        }
         #endregion
 
         #region Utilities
@@ -228,8 +217,7 @@ namespace Fall_Friends.Controllers
         }
 
         public void ResetTimer() {
-            _likeTimer = 0.0f;
-            Status = PlayerStatus.DashingToCenter;
+            SwitchState(typeof(DashingState));
         }
 
         public int getScore() {

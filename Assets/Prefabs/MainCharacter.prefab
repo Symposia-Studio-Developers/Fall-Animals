@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &419971360
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 419971361}
+  m_Layer: 0
+  m_Name: GroundCheck
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &419971361
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 419971360}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -1.56, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2439756918416459267}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &180764202193544988
 GameObject:
   m_ObjectHideFlags: 0
@@ -338,7 +369,7 @@ GameObject:
   - component: {fileID: 8591721475193314425}
   - component: {fileID: 1802765432}
   - component: {fileID: 1802765431}
-  - component: {fileID: 745427524}
+  - component: {fileID: 1688851750436010553}
   m_Layer: 0
   m_Name: MainCharacter
   m_TagString: Player
@@ -360,6 +391,7 @@ Transform:
   m_Children:
   - {fileID: 3344178186076210049}
   - {fileID: 1394130566976360390}
+  - {fileID: 419971361}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -409,11 +441,11 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.94793653
+  m_Radius: 1.1147172
   m_Height: 3.3941398
   m_Direction: 1
-  m_Center: {x: 0.30455875, y: -0.13204575, z: 0.14337756}
---- !u!114 &745427524
+  m_Center: {x: 0.071298, y: -0.13204575, z: -0.07697105}
+--- !u!114 &1688851750436010553
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -425,20 +457,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b3012883b784c038bf5fc229b4fcb26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PushRadius: 1.5
-  PushForce: 20
-  ThrowArcHeight: 2
-  ThrowForce: 2
+  doTick: 1
+  whatIsGround:
+    serializedVersion: 2
+    m_Bits: 64
+  groundCheck: {fileID: 419971361}
+  groundCheckRadius: 0.2
+  PushPullRadius: 1.5
+  PushForce: 25
   MaxIdleSpeed: 3
   MaxActiveSpeed: 5
   MaxLikeDuration: 10
   MaxFreezeTime: 3
-  PushCoolDown: 2
-  PullCoolDown: 2
-  AlwaysActive: 0
-  WithCrownMat: {fileID: 0}
+  PushCoolDown: 4
+  PullCoolDown: 4
   _playerId: 
-  _crown: {fileID: 0}
+  IsActive: 0
 --- !u!1 &3332415997151821435
 GameObject:
   m_ObjectHideFlags: 0
