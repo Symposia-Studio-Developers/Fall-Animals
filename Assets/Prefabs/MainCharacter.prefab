@@ -462,15 +462,18 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   groundCheck: {fileID: 419971361}
-  groundCheckRadius: 0.2
+  groundCheckRadius: 0.3
   PushPullRadius: 1.5
   PushForce: 25
-  MaxIdleSpeed: 3
-  MaxActiveSpeed: 5
+  MaxIdleSpeed: 0.2
+  MaxActiveSpeed: 3
   MaxLikeDuration: 10
   MaxFreezeTime: 3
   PushCoolDown: 4
   PullCoolDown: 4
+  OnLandEvent:
+    m_PersistentCalls:
+      m_Calls: []
   _playerId: 
   IsActive: 0
 --- !u!1 &3332415997151821435

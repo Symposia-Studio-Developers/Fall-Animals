@@ -67,6 +67,11 @@ namespace Fall_Friends.Controllers
             if (IsActive) SwitchState(typeof(DashingState)); 
         }
 
+        protected override void Update()
+        {
+            base.Update();
+        }
+
         protected override void FixedUpdate()
         {
             base.FixedUpdate();
@@ -78,11 +83,16 @@ namespace Fall_Friends.Controllers
             for (int i = 0; i < colliders.Length; i++) {
                 if (colliders[i].gameObject != gameObject) {
                     Grounded = true;
-                    if (!wasGrounded) {
-                        _animator.SetBool("Falling", false);
-                    }
+                    // if (!wasGrounded) {
+                    //     // TODO: ADD FALL/STOP FALLING ANIMATIONS
+                    //     _animator.SetBool("Falling", false);
+                    // }
                 }
             }
+
+            if (_rb.velocity.y < -0.1)
+                Falling = true;
+            else Falling = false;
         }
 
         private void OnCollisionEnter(Collision other) 
@@ -174,27 +184,30 @@ namespace Fall_Friends.Controllers
         #region Animations
         public void PlayPushAnimation() 
         {
-            StartCoroutine(PushAnimationHelper());
-        }
-
-        IEnumerator PushAnimationHelper() 
-        {
-            _animator.SetBool("Pushing", true);
-            yield return new WaitForSeconds(Time.deltaTime * 2); // pause for one frame
-            _animator.SetBool("Pushing", false);
+            StartCoroutine(PlayAnimationHelper("Pushing", true));
         }
 
         public void PlayPullAnimation() 
         {
-            StartCoroutine(PullAnimationHelper());
+            StartCoroutine(PlayAnimationHelper("Pulling", true));
         }
 
-        IEnumerator PullAnimationHelper()
+        public void PlayPulledAnimation()
         {
-            _animator.SetBool("Pulling", true);
-            yield return new WaitForSeconds(Time.deltaTime * 2); // pause for one frame
-            _animator.SetBool("Pulling", false);
+            StartCoroutine(PlayAnimationHelper("Pulled", true, 1));
         }
+
+        public void PlayFallingAnimation()
+        {
+            StartCoroutine(PlayAnimationHelper("Falling", true));
+        }
+
+        IEnumerator PlayAnimationHelper(string name, bool onOff, float waitTime = 2.0f) {
+            _animator.SetBool(name, onOff);
+            yield return new WaitForSeconds(Time.deltaTime * waitTime); // pause for one frame
+            _animator.SetBool(name, !onOff);
+        }
+
         #endregion
 
         #region Helper Functions

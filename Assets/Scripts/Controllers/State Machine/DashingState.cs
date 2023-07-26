@@ -13,7 +13,7 @@ public class DashingState : BaseState
     private readonly float speed;
 
     private float elapsedTime; // like elapsed time
-    private float pullElapsedTime = 0.0f;
+    private float pullElapsedTime;
     private Vector3 moveDir;
 
     private const float rotationSpeed = 1.5f;
@@ -24,6 +24,7 @@ public class DashingState : BaseState
         this.likeTimer = likeTimer;
         this.pullTimer = pullTimer;
         this.speed = speed;
+        this.pullElapsedTime = pullTimer;
     }
 
     public override void OnEnter() 
@@ -39,14 +40,19 @@ public class DashingState : BaseState
         if (elapsedTime > likeTimer) 
             return typeof(IdleState);
 
-        Move();
-        
         // perform pulling action
+        pullElapsedTime += Time.deltaTime;
+
+        // if not grounded, do nothing
+        if (!actor.Grounded) return null;
+
+        Move();
         if (pullElapsedTime > pullTimer) 
         {
             pullElapsedTime = 0.0f;
             var nearestPlayer = actor.GetNearestPlayerFacingFront();
-            Pull(nearestPlayer);
+            if (nearestPlayer != null)
+                Pull(nearestPlayer);
         }
         
         return null;
@@ -84,9 +90,13 @@ public class DashingState : BaseState
 
         // TODO: the other player gets pulled here
         otherPlayer.SwitchState(typeof(FrozenState));
-        
+        otherPlayer.PlayPulledAnimation();
 
-        
+        // Move up and then in the direction of player
+        Vector3 forceDirection = actor.transform.position - otherPlayer.transform.position;
+
+        otherPlayer.transform.DOMoveY(otherPlayer.transform.position.y + 4.0f, 0.1f).OnComplete(() => otherPlayer.transform.DOLocalMove(forceDirection.normalized + otherPlayer.transform.position, 0.2f));
+
     }
 
     public override void FrameUpdate()

@@ -14,6 +14,7 @@ namespace Fall_Friends.Controllers {
         [SerializeField] protected bool doTick = true; // pause updates or not
 
         public bool Grounded {get; set;}
+        public bool Falling {get; set;}
 
         protected virtual void Start() {}
 

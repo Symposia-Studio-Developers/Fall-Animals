@@ -37,6 +37,7 @@ public class DefendingState : BaseState
             return typeof(IdleState);
         pushElapsedTime += Time.deltaTime;
         
+        if (!actor.Grounded) return null;
         var nearestPlayer = actor.GetNearestPlayer();
         if (nearestPlayer == null) 
         {
