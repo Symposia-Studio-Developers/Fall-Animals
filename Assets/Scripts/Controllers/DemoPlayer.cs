@@ -74,6 +74,11 @@ namespace Fall_Friends.Controllers
 
         protected override void FixedUpdate()
         {
+            if (_rb == null) 
+                Debug.LogError("Body is null");
+            if (GameManager.Instance == null) 
+                Debug.LogError("GameManager instance is null");
+
             base.FixedUpdate();
 
             // check whether the player is on the ground
