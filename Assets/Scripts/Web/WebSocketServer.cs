@@ -35,7 +35,7 @@ public class WebSocketServer : MonoBehaviour
     void Start()
     {
         //ws = new WebSocket("ws://localhost:8080");
-        ws = new WebSocket("wss://symposiastudio.com/streamer-console");
+        ws = new WebSocket("wss://symposiastudio.com/ws-streamer-console");
 
         ws.OnOpen += (sender, e) =>
         {
