@@ -18,6 +18,7 @@ public class WebSocketServer : MonoBehaviour
         public string client;
         public string giftName; // add the giftName property
         public string repeatCount; // add the repeatCount property
+        public string playerIcon;
     }
 
     [System.Serializable]

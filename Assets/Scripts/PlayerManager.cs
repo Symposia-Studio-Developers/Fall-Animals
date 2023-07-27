@@ -23,13 +23,14 @@ public class PlayerManager : MonoBehaviour
         
     }
     
-    public void addNewPlayer(string playerId)
+    public void addNewPlayer(string playerId, string iconURL)
     {
         float xPosition = Random.Range(-9.0f, 9.0f);
         float zPosition = Random.Range(-9.0f, 9.0f);
         float yPosition = Random.Range(1.0f, 3.0f);
         Vector3 vec3 = new Vector3(xPosition, yPosition, zPosition);
         GameObject newPlayer = Instantiate(PlayerPrefab, vec3, Quaternion.identity, PlayersParent.transform);
+        newPlayer.GetComponentInChildren<NametagController>().ApplyIcon(iconURL, playerId);
         DemoPlayer playerData = newPlayer.GetComponent<DemoPlayer>();
         playerData.SetPlayerId(playerId);
         playerDatas.Add(playerData);
