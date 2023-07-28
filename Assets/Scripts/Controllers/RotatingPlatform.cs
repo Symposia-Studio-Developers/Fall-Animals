@@ -9,16 +9,13 @@ namespace Fall_Friends.Controllers
 
         [SerializeField] private float _speed = 2.0f;
 
-        // Update is called once per frame
         private void Update()
         {
             transform.Rotate(new Vector3(0, _speed * Time.deltaTime, 0));
         }
 
         private void OnCollisionEnter(Collision other) {
-            if (other.gameObject.CompareTag("Player")) {
-                other.gameObject.transform.SetParent(transform);
-            }
+            
         }
 
         private void OnCollisionStay(Collision other) {

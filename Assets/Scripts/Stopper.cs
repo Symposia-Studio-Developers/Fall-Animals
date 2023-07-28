@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections;
 using Fall_Friends.Controllers;
 using UnityEngine;
 
@@ -7,17 +7,18 @@ namespace Fall_Friends.Colliders
     public class Stopper : MonoBehaviour
     {
 
-        private void Update() {
-            
-        }
-
-        private void OnCollisionEnter(Collision other) {
-            if (other.gameObject.CompareTag("Player")) {
-                other.gameObject.GetComponent<DemoPlayer>().Status = PlayerStatus.Defensing;
+        private void OnCollisionEnter(Collision other) 
+        {
+            if (other.gameObject.CompareTag("Player")) 
+            {
+                Debug.Log($"Switching {other.gameObject.name}'s state");
+                // StartCoroutine(SwitchStateCoroutine(other));
+                other.gameObject.GetComponent<DemoPlayer>().SwitchState(typeof(DefendingState));
             }
         }
 
-        private void OnCollisionStay(Collision other) {
+        private void OnCollisionStay(Collision other) 
+        {
             if (other.gameObject.CompareTag("Player"))
             {
                 Rigidbody rb = other.gameObject.GetComponent<Rigidbody>();
@@ -27,12 +28,19 @@ namespace Fall_Friends.Colliders
             }
         }
 
-        private void OnCollisionExit(Collision other) {
+        private void OnCollisionExit(Collision other) 
+        {
             if (other.gameObject.CompareTag("Player"))
             {
                 DemoPlayer dp = other.gameObject.GetComponent<DemoPlayer>();
-                dp.Status = PlayerStatus.Idle;
+                dp.SwitchState(typeof(IdleState));
             }
+        }
+
+        IEnumerator SwitchStateCoroutine(Collision other) 
+        {
+            yield return new WaitForSeconds(1.5f); // let the player move forward a little bit more
+            other.gameObject.GetComponent<DemoPlayer>().SwitchState(typeof(DefendingState));
         }
     }
 }
