@@ -95,16 +95,20 @@ namespace Fall_Friends.Controllers
                 }
             }
 
+            if (!Grounded) Debug.Log("The player is not grounded");
+
             if (_rb.velocity.y < -0.1)
                 Falling = true;
             else Falling = false;
         }
 
-        private void OnCollisionEnter(Collision other) 
+        private IEnumerator OnCollisionEnter(Collision other) 
         {
             if (other.gameObject.CompareTag("MiddleGround")) 
             {
-                StartCoroutine(SwitchToDefendingStateHelper());
+                float randomWaitTime = Random.Range(1.0f, 2.0f);
+                yield return new WaitForSeconds(randomWaitTime);
+                SwitchState(typeof(DefendingState));
             }
         }
 
@@ -116,7 +120,8 @@ namespace Fall_Friends.Controllers
                 var trans = _rb.transform;
                 trans.localScale = trans.localScale * 1.0001f;
             }
-            else if (other.gameObject.CompareTag("Ring")) 
+            
+            if (other.gameObject.CompareTag("Ring")) 
             {
                 transform.SetParent(other.gameObject.transform);
             }
@@ -128,7 +133,8 @@ namespace Fall_Friends.Controllers
             {
                 SwitchState(typeof(IdleState));
             }
-            else if (other.gameObject.CompareTag("Ring")) 
+            
+            if (other.gameObject.CompareTag("Ring")) 
             {
                 transform.SetParent(null);
             }
@@ -206,22 +212,22 @@ namespace Fall_Friends.Controllers
         {
             StartCoroutine(PlayAnimationHelper("Falling", true));
         }
-
-        IEnumerator PlayAnimationHelper(string name, bool onOff, float waitTime = 2.0f) {
-            _animator.SetBool(name, onOff);
-            yield return new WaitForSeconds(Time.deltaTime * waitTime); // pause for one frame
-            _animator.SetBool(name, !onOff);
-        }
-
         #endregion
 
         #region Helper Functions
         IEnumerator SwitchToDefendingStateHelper ()
         {   
+            Debug.Log($"SwitchToDefend Helper, player is gounded? {Grounded}");
             // for temporary debug purpose
-            float randomWaitTime = Random.Range(0.5f, 2.0f);
-            yield return new WaitForSeconds(randomWaitTime);
+            float randomWaitTime = Random.Range(1.0f, 2.0f);
+            yield return new WaitForSeconds(20f);
             SwitchState(typeof(DefendingState));
+        }
+
+        IEnumerator PlayAnimationHelper(string name, bool onOff, float waitTime = 2.0f) {
+            _animator.SetBool(name, onOff);
+            yield return new WaitForSeconds(Time.deltaTime * waitTime); // pause for one frame
+            _animator.SetBool(name, !onOff);
         }
         #endregion
 

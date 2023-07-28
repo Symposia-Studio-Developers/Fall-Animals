@@ -61,7 +61,7 @@ public class DashingState : BaseState
     private void Move () {
         // get the moving direction
         Vector3 centerPos = GameManager.Instance.CenterPosition;
-        moveDir = (centerPos - new Vector3(actor.transform.position.x, centerPos.y, actor.transform.position.z));
+        moveDir = (centerPos - new Vector3(actor.transform.position.x, centerPos.y, actor.transform.position.z)).normalized;
         moveDir = Vector3.ClampMagnitude(moveDir, 1);
 
         // make sure the player is always facing the moving direction
@@ -80,7 +80,7 @@ public class DashingState : BaseState
         Debug.Log($"{actor.name} is pulling the other player {otherPlayer.name}");
         actor.PlayPullAnimation();
 
-        // make sure the current player is facing the other player's direction
+        // TODO: make sure the current player is facing the other player's direction
         Vector3 facingDir = otherPlayer.transform.position - actor.transform.position;
         actor.transform.rotation = Quaternion.Slerp(
                 actor.transform.rotation,

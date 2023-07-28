@@ -1,7 +1,9 @@
 using UnityEngine;
 using WebSocketSharp;
 using System.Collections.Generic;
-using System.Collections.Concurrent; // Added for ConcurrentQueue
+using System.Collections.Concurrent;
+using System.Collections;
+using Newtonsoft.Json;
 
 public class WebSocketServer : MonoBehaviour
 {
@@ -14,6 +16,9 @@ public class WebSocketServer : MonoBehaviour
         public string playerId;
         public string danmu;
         public string client;
+        public string giftName; // add the giftName property
+        public string repeatCount; // add the repeatCount property
+        public string playerIcon;
     }
 
     [System.Serializable]
@@ -26,11 +31,12 @@ public class WebSocketServer : MonoBehaviour
     }
 
     public PlayerManager playerManager;
-    public ConcurrentQueue<Request> myRequestQueue = new ConcurrentQueue<Request>(); // Replaced Queue with ConcurrentQueue
+    public ConcurrentQueue<Request> myRequestQueue = new ConcurrentQueue<Request>();
 
     void Start()
     {
-        ws = new WebSocket("ws://54.159.171.208:8080"); // EC2 Public IP
+        //ws = new WebSocket("ws://localhost:8080");
+        ws = new WebSocket("wss://symposiastudio.com/ws-streamer-console");
 
         ws.OnOpen += (sender, e) =>
         {
@@ -44,70 +50,95 @@ public class WebSocketServer : MonoBehaviour
             Debug.Log("WebSocket error occurred: " + e.Message);
         };
 
-        
-
-        // New: handle binary data, woc the web socket sharp receives binary data, woc i debugged for two days!!
         ws.OnMessage += (sender, e) =>
-{
-    Debug.Log("OnMessage event triggered.");
-
-    string message = null;
-    if (e.IsBinary)
-    {
-        Debug.Log("Received binary data.");
-        message = System.Text.Encoding.UTF8.GetString(e.RawData);
-        Debug.Log("Raw data: " + message);
-    }
-    else if (!string.IsNullOrEmpty(e.Data))
-    {
-        message = e.Data;
-    }
-    else
-    {
-        Debug.Log("Received empty data.");
-        return;
-    }
-
-    Debug.Log("Raw Message Received from " + ((WebSocket)sender).Url + ", Data : " + message); // changed e.Data to message
-
-    try
-    {
-        RequestCheck requestCheck = JsonUtility.FromJson<RequestCheck>(message); // changed e.Data to message
-
-        if (requestCheck == null || requestCheck.action == null)
         {
-            Debug.Log("Raw data: " + message); // changed e.Data to message
-            Debug.LogError("The incoming data is invalid or does not contain all the required keys.");
-            return;
-        }
-    }
-    catch (System.Exception ex)
-    {
-        Debug.LogError("Failed to parse the incoming data into a RequestCheck object: " + ex.Message);
-        Debug.LogError("Incoming data was: " + message); // changed e.Data to message
-        return;
-    }
+            string message = null;
+            if (e.IsBinary)
+            {
+                Debug.Log("Received binary data.");
+                message = System.Text.Encoding.UTF8.GetString(e.RawData);
+                Debug.Log("Raw data: " + message);
+            }
+            else if (!string.IsNullOrEmpty(e.Data))
+            {
+                message = e.Data;
+            }
+            else
+            {
+                Debug.Log("Received empty data.");
+                return;
+            }
 
-    try
-    {
-        Request newRequest = JsonUtility.FromJson<Request>(message); // changed e.Data to message
-        Debug.Log("Parsed Request: " + newRequest.action + ", " + newRequest.playerId);
+            Debug.Log("Raw Message Received from " + ((WebSocket)sender).Url + ", Data : " + message);
 
-        if (newRequest != null) // Check if newRequest is not null before enqueueing
-        {
-            myRequestQueue.Enqueue(newRequest);
-        }
-        else
-        {
-            Debug.LogError("Failed to enqueue Request because it is null");
-        }
-    }
-    catch (System.Exception ex)
-    {
-        Debug.LogError("Failed to parse the incoming data into a Request object: " + ex.Message);
-        Debug.LogError("Failed Data: " + message); // changed e.Data to message
-    }
-};
+            try
+            {
+                RequestCheck requestCheck = JsonUtility.FromJson<RequestCheck>(message);
+
+                if (requestCheck == null || requestCheck.action == null)
+                {
+                    Debug.Log("Raw data: " + message);
+                    Debug.LogError("The incoming data is invalid or does not contain all the required keys.");
+                    return;
+                }
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogError("Failed to parse the incoming data into a RequestCheck object: " + ex.Message);
+                Debug.LogError("Incoming data was: " + message);
+                return;
+            }
+
+            try
+            {
+                Request newRequest = JsonUtility.FromJson<Request>(message);
+
+                if (newRequest != null)
+                {
+                    if (newRequest.action == "getPlayers")
+                    {
+                        Debug.Log("List of players received: " + newRequest.playerId);
+                    }
+
+                    if (newRequest.action == "addPlayer" || newRequest.action == "addPlayerSC" || newRequest.action == "addBot") 
+                    {
+                        Debug.Log("Player: " + newRequest.playerId + " joined");
+                    }
+
+                    if (newRequest.action == "deletePlayer") 
+                    {
+                        Debug.Log("Player: " + newRequest.playerId + " left");
+                    }
+
+                    if (newRequest.action == "like") 
+                    {
+                        Debug.Log("Player: " + newRequest.playerId + " liked");
+                    }
+
+                    if (newRequest.action == "sendDanmu") 
+                    {
+                        Debug.Log("Player: " + newRequest.playerId + " sent danmu: " + newRequest.danmu);
+                    }
+
+                    if (newRequest.action == "gift") 
+                    {
+                        Debug.Log("Player: " + newRequest.playerId + " sent gift: " + newRequest.giftName + " x " + newRequest.repeatCount);
+                    }
+
+                    myRequestQueue.Enqueue(newRequest);
+                }
+                else
+                {
+                    Debug.LogError("Failed to enqueue Request because it is null");
+                }
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogError("Failed to parse the incoming data into a Request object: " + ex.Message);
+                Debug.LogError("Failed Data: " + message);
+            }
+        };
+
 
 
         ws.ConnectAsync();
@@ -120,6 +151,7 @@ public class WebSocketServer : MonoBehaviour
 
     void OnDestroy()
     {
+        //StopCoroutine(FetchPlayerIDs());
         ws.Close();
     }
 }
