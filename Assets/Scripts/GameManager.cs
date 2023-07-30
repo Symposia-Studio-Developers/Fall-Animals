@@ -13,8 +13,14 @@ namespace Fall_Friends.Manager
         public float PowerCoefficient = 1.0f;
         public GameObject players;
 
+        [SerializeField] private string[] defaultIcons;
         [SerializeField] GameObject wssvGameObject;
         WebSocketServer webSocketServer;
+        private int iconCount = 0;
+        private float _cameraSwitchTimer;
+        private int _currCameraIndex = 0;
+        [SerializeField] private float[] _cameraTime;
+        [SerializeField] private Camera[] _cameras;
 
 
         // Call the base class Awake method to ensure the Singleton is set up correctly
@@ -66,7 +72,21 @@ namespace Fall_Friends.Manager
                         Debug.Log(currRequest.playerId + ": Add bot");
                         // add code here
                     }
+                    else if (currRequest.action == "addPlayerSC")
+                    {
+                        Debug.Log(currRequest.playerId + ": Add bot through SC");
+                        players.GetComponent<PlayerManager>().addNewPlayer(currRequest.playerId, defaultIcons[iconCount++ % defaultIcons.Length]);
+                    }
                 }
+            }
+
+            _cameraSwitchTimer += Time.deltaTime;
+            if (_cameraSwitchTimer > _cameraTime[_currCameraIndex])
+            {
+                Camera.current.gameObject.SetActive(false);
+                _cameras[_currCameraIndex].gameObject.SetActive(true);
+                _currCameraIndex = (_currCameraIndex + 1) % _cameras.Length;
+                _cameraSwitchTimer = 0.0f;
             }
         }
     }

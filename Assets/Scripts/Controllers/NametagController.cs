@@ -20,6 +20,7 @@ namespace Fall_Friends.Controllers
         {
             StartCoroutine(DownloadAndReplaceIcon(URL, playerID));
         }
+
         private void Start()
         {
             _camera = Camera.main;
@@ -30,12 +31,12 @@ namespace Fall_Friends.Controllers
         {
             transform.LookAt(_camera.transform);
             Vector3 rotation = transform.eulerAngles;
-            Vector3 worldPosition = transform.position;
+            //Vector3 worldPosition = transform.position;
             rotation.x = 0;
             rotation.z = 0;
             rotation.y += 180;
-            worldPosition.y = 6.5f;
-            transform.position = worldPosition;
+            //worldPosition.y = 6.5f;
+            //transform.position = worldPosition;
             transform.eulerAngles = rotation;
             if (_nametag.text == "")
             {

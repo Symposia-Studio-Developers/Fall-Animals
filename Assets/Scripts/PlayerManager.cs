@@ -35,7 +35,7 @@ public class PlayerManager : MonoBehaviour
         playerData.SetPlayerId(playerId);
         playerDatas.Add(playerData);
     }
-    
+
     public void deletePlayer(string playerId)
     {
         for (int i = 0; i < playerDatas.Count; i++) {
