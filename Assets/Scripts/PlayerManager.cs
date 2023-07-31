@@ -30,6 +30,7 @@ public class PlayerManager : MonoBehaviour
         float yPosition = Random.Range(1.0f, 3.0f);
         Vector3 vec3 = new Vector3(xPosition, yPosition, zPosition);
         GameObject newPlayer = Instantiate(PlayerPrefab, vec3, Quaternion.identity, PlayersParent.transform);
+        newPlayer.name = playerId;
         newPlayer.GetComponentInChildren<NametagController>().ApplyIcon(iconURL, playerId);
         DemoPlayer playerData = newPlayer.GetComponent<DemoPlayer>();
         playerData.SetPlayerId(playerId);
@@ -38,6 +39,11 @@ public class PlayerManager : MonoBehaviour
 
     public void deletePlayer(string playerId)
     {
+        GameObject playerToDestroy = GameObject.Find(playerId);
+        if (playerToDestroy){
+            Destroy(playerToDestroy.gameObject);
+            Debug.Log("player gameobject destroyed");
+        }
         for (int i = 0; i < playerDatas.Count; i++) {
             if (playerDatas[i].GetPlayerId() == playerId) playerDatas.RemoveAt(i);
         }

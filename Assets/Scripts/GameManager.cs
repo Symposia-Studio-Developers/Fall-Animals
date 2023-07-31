@@ -77,6 +77,11 @@ namespace Fall_Friends.Manager
                         Debug.Log(currRequest.playerId + ": Add bot through SC");
                         players.GetComponent<PlayerManager>().addNewPlayer(currRequest.playerId, defaultIcons[iconCount++ % defaultIcons.Length]);
                     }
+                    else if (currRequest.action == "deletePlayer")
+                    {
+                        Debug.Log(currRequest.playerId + ": Delete Player");
+                        players.GetComponent<PlayerManager>().deletePlayer(currRequest.playerId);
+                    }
                 }
             }
 
