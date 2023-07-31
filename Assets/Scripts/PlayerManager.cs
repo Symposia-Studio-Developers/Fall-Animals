@@ -33,6 +33,7 @@ public class PlayerManager : MonoBehaviour
         newPlayer.name = playerId;
         newPlayer.GetComponentInChildren<NametagController>().ApplyIcon(iconURL, playerId);
         DemoPlayer playerData = newPlayer.GetComponent<DemoPlayer>();
+        playerData.IsActive = true;
         playerData.SetPlayerId(playerId);
         playerDatas.Add(playerData);
     }
@@ -43,6 +44,18 @@ public class PlayerManager : MonoBehaviour
         if (playerToDestroy){
             Destroy(playerToDestroy.gameObject);
             Debug.Log("player gameobject destroyed");
+        }
+        for (int i = 0; i < playerDatas.Count; i++) {
+            if (playerDatas[i].GetPlayerId() == playerId) playerDatas.RemoveAt(i);
+        }
+    }
+    
+    public void resetTimer(string playerId)
+    {
+        GameObject playerToResetTimer = GameObject.Find(playerId);
+        if (playerToResetTimer){
+            playerToResetTimer.GetComponent<DemoPlayer>().ResetTimer();
+            Debug.Log("player reset timer");
         }
         for (int i = 0; i < playerDatas.Count; i++) {
             if (playerDatas[i].GetPlayerId() == playerId) playerDatas.RemoveAt(i);

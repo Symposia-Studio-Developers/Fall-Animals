@@ -55,6 +55,7 @@ namespace Fall_Friends.Manager
                     else if (currRequest.action == "like")
                     {
                         Debug.Log(currRequest.playerId + ": Thumbs up");
+                        players.GetComponent<PlayerManager>().resetTimer(currRequest.playerId);
                         // add code here
                     }
                     else if (currRequest.action == "gift")
