@@ -19,12 +19,12 @@ namespace Fall_Friends.Controllers
         [SerializeField] private float groundCheckRadius = 0.3f;
 
         [Header("Push and Pull")]
-        public float PushPullRadius = 1.5f;
+        public float PushPullRadius = 2.0f;
         public float PushForce = 25f;
 
-        [Header("Move Speed")]
-        public float MaxIdleSpeed = 3f;
-        public float MaxActiveSpeed = 5f;
+        [Header("Movement")]
+        public float MaxIdleSpeed = 1f;
+        public float MaxActiveSpeed = 3f;
 
         [Header("Timer")]
         public float MaxLikeDuration = 10f;
@@ -131,7 +131,7 @@ namespace Fall_Friends.Controllers
         {
             if (other.gameObject.CompareTag("MiddleGround"))
             {
-                SwitchState(typeof(IdleState));
+                // SwitchState(typeof(IdleState));
             }
             
             if (other.gameObject.CompareTag("Ring")) 
@@ -142,7 +142,15 @@ namespace Fall_Friends.Controllers
 
         #endregion
 
-        #region Push and Pull Utilities
+        #region Push and Pull
+        private void Rotate() {
+            // transform.rotation = Quaternion.Slerp(
+            //     transform.rotation,
+            //     Quaternion.LookRotation(facingDir.normalized),
+            //     Time.deltaTime * rotationSpeed // May need to tune
+            // );
+        }
+
         public DemoPlayer GetNearestPlayer() {
             Collider[] colliders = Physics.OverlapSphere(transform.position, PushPullRadius);
             if (colliders.Length == 0) return null; // no nearby players
@@ -186,7 +194,6 @@ namespace Fall_Friends.Controllers
                         }
                     }
                 }
-                
             }
             return nearest;
         }

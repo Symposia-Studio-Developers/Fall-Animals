@@ -35,9 +35,25 @@ public class DefendingState : BaseState
         elapsedTime += Time.deltaTime;
         if (elapsedTime > likeTimer)
             return typeof(IdleState);
-        pushElapsedTime += Time.deltaTime;
         
         if (!actor.Grounded) return null;
+
+        RaycastHit hit;
+        if (Physics.Raycast(actor.transform.position, -Vector3.up, out hit)) {
+            // Debug.Log($"Found an object {hit.collider.name}, with distanc {hit.distance}");
+
+            if (!hit.collider.CompareTag("MiddleGround"))
+                return typeof(IdleState);
+        }
+            
+        Push();
+        
+        return null;
+    }
+
+    private void Push() 
+    {
+        pushElapsedTime += Time.deltaTime;
         var nearestPlayer = actor.GetNearestPlayer();
         if (nearestPlayer == null) 
         {
@@ -47,23 +63,23 @@ public class DefendingState : BaseState
         {
             if (pushElapsedTime > pushTimer) 
             {
-                Push(nearestPlayer);
+                PushHelper(nearestPlayer);
                 pushElapsedTime = 0.0f;
             }
         }
-        return null;
     }
 
-    private void Push(DemoPlayer otherPlayer) 
+    private void PushHelper(DemoPlayer otherPlayer) 
     {
         Debug.Log($"{actor.name} is pushing the other player {otherPlayer.name}");
         actor.PlayPushAnimation();
         Vector3 forceDirection = otherPlayer.transform.position - actor.transform.position;
-        actor.transform.rotation = Quaternion.Slerp(
-                actor.transform.rotation,
-                Quaternion.LookRotation(forceDirection.normalized),
-                Time.deltaTime * rotationSpeed // May need to tune
-            );
+        // actor.transform.rotation = Quaternion.Slerp(
+        //         actor.transform.rotation,
+        //         Quaternion.LookRotation(forceDirection.normalized),
+        //         Time.deltaTime * rotationSpeed // May need to tune
+        //     );
+        actor.transform.LookAt(otherPlayer.transform);
 
         otherPlayer.SwitchState(typeof(FrozenState));
 

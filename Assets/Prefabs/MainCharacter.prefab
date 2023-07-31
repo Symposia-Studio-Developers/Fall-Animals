@@ -466,8 +466,8 @@ MonoBehaviour:
   groundCheckRadius: 0.3
   PushPullRadius: 1.5
   PushForce: 20
-  MaxIdleSpeed: 3
-  MaxActiveSpeed: 5
+  MaxIdleSpeed: 1
+  MaxActiveSpeed: 3
   MaxLikeDuration: 10
   MaxFreezeTime: 3
   PushCoolDown: 2
