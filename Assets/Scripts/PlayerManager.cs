@@ -10,6 +10,8 @@ public class PlayerManager : MonoBehaviour
     public List<DemoPlayer> playerDatas = new List<DemoPlayer>();
     public GameObject PlayerPrefab;
     public GameObject PlayersParent;
+    public Material[] SkinColors;
+    private int nextColorIndex = 0;
     
     // Start is called before the first frame update
     void Start()
@@ -31,6 +33,10 @@ public class PlayerManager : MonoBehaviour
         Vector3 vec3 = new Vector3(xPosition, yPosition, zPosition);
         GameObject newPlayer = Instantiate(PlayerPrefab, vec3, Quaternion.identity, PlayersParent.transform);
         newPlayer.name = playerId;
+        Renderer myRenderer = newPlayer.transform.FindChild("pCylinder1").gameObject.GetComponent<SkinnedMeshRenderer>();
+        myRenderer.material = SkinColors[nextColorIndex];
+        nextColorIndex++;
+        if (nextColorIndex == 3) nextColorIndex = 0; // change to actual skin color number later
         newPlayer.GetComponentInChildren<NametagController>().ApplyIcon(iconURL, playerId);
         DemoPlayer playerData = newPlayer.GetComponent<DemoPlayer>();
         playerData.IsActive = true;

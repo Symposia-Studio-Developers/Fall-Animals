@@ -95,7 +95,7 @@ namespace Fall_Friends.Controllers
                 }
             }
 
-            if (!Grounded) Debug.Log("The player is not grounded");
+            //if (!Grounded) Debug.Log("The player is not grounded");
 
             if (_rb.velocity.y < -0.1)
                 Falling = true;
