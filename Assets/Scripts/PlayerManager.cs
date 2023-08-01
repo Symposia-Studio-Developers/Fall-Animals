@@ -57,9 +57,6 @@ public class PlayerManager : MonoBehaviour
             playerToResetTimer.GetComponent<DemoPlayer>().ResetTimer();
             Debug.Log("player reset timer");
         }
-        for (int i = 0; i < playerDatas.Count; i++) {
-            if (playerDatas[i].GetPlayerId() == playerId) playerDatas.RemoveAt(i);
-        }
     }
     
     public string getRankingJson()
