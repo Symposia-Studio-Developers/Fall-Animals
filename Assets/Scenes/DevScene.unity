@@ -246,6 +246,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0df6fcb351a7f454292880bbbb2b9aee, type: 3}
+--- !u!4 &521951887 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 309742807, guid: 0df6fcb351a7f454292880bbbb2b9aee, type: 3}
+  m_PrefabInstance: {fileID: 1666650280}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &534038899
 GameObject:
   m_ObjectHideFlags: 0
@@ -1158,8 +1163,16 @@ PrefabInstance:
       value: CDA
       objectReference: {fileID: 0}
     - target: {fileID: 745427524, guid: 0df6fcb351a7f454292880bbbb2b9aee, type: 3}
+      propertyPath: _groundCheck
+      value: 
+      objectReference: {fileID: 521951887}
+    - target: {fileID: 745427524, guid: 0df6fcb351a7f454292880bbbb2b9aee, type: 3}
       propertyPath: groundCheckRadius
       value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 745427524, guid: 0df6fcb351a7f454292880bbbb2b9aee, type: 3}
+      propertyPath: _whatIsGround.m_Bits
+      value: 64
       objectReference: {fileID: 0}
     - target: {fileID: 2439756918416459267, guid: 0df6fcb351a7f454292880bbbb2b9aee, type: 3}
       propertyPath: m_RootOrder
@@ -1484,14 +1497,6 @@ PrefabInstance:
     - target: {fileID: 745427524, guid: 0df6fcb351a7f454292880bbbb2b9aee, type: 3}
       propertyPath: _playerId
       value: AABBC
-      objectReference: {fileID: 0}
-    - target: {fileID: 745427524, guid: 0df6fcb351a7f454292880bbbb2b9aee, type: 3}
-      propertyPath: MaxIdleSpeed
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 745427524, guid: 0df6fcb351a7f454292880bbbb2b9aee, type: 3}
-      propertyPath: MaxActiveSpeed
-      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2439756918416459267, guid: 0df6fcb351a7f454292880bbbb2b9aee, type: 3}
       propertyPath: m_RootOrder

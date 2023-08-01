@@ -30,6 +30,7 @@ public class DashingState : BaseState
     public override void OnEnter() 
     {
         actor.GetComponent<Animator>().SetBool("Running", true);
+        actor.GetComponent<Animator>().SetFloat("RunningSpeed", speed);
         elapsedTime = 0.0f;
     }
 
@@ -105,5 +106,6 @@ public class DashingState : BaseState
     public override void OnExit() 
     {
         actor.GetComponent<Animator>().SetBool("Running", false);
+        actor.GetComponent<Animator>().SetFloat("RunningSpeed", 1);
     }
 }

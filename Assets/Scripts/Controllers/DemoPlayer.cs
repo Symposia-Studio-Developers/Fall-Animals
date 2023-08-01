@@ -14,9 +14,9 @@ namespace Fall_Friends.Controllers
         #region Public/Editable Variables
 
         [Header("Ground Check")]
-        [SerializeField] private LayerMask whatIsGround;
-        [SerializeField] private Transform groundCheck;
-        [SerializeField] private float groundCheckRadius = 0.3f;
+        [SerializeField] private LayerMask _whatIsGround;
+        [SerializeField] private Transform _groundCheck;
+        [SerializeField] private float _groundCheckRadius = 0.3f;
 
         [Header("Push and Pull")]
         public float PushPullRadius = 2.0f;
@@ -32,11 +32,6 @@ namespace Fall_Friends.Controllers
         public float PushCoolDown = 4f;
         public float PullCoolDown = 4f;
 
-        [Header("Events")]
-        [Space]
-
-        public UnityEvent OnLandEvent;
-
         [Header("Debug")]
         [SerializeField] private string _playerId;// unique playerId parsed from tiktok
         //note, exposing playerId as a public variable now to set it in Unity's inspector for testing and initial setup, 
@@ -48,7 +43,7 @@ namespace Fall_Friends.Controllers
         private Animator _animator;
         private Rigidbody _rb;
 
-        private bool isPlayingFallingAnimation = false;
+        private bool _isPlayingFallingAnimation = false;
         #endregion
 
 
@@ -87,6 +82,7 @@ namespace Fall_Friends.Controllers
             FallingCheck();
         }
 
+        #region Collision Functions
         private IEnumerator OnCollisionEnter(Collision other) 
         {
             if (other.gameObject.CompareTag("MiddleGround")) 
@@ -119,6 +115,7 @@ namespace Fall_Friends.Controllers
                 transform.SetParent(null);
             }
         }
+        #endregion
 
         #endregion
 
@@ -185,7 +182,7 @@ namespace Fall_Friends.Controllers
 
         public void PlayPulledAnimation()
         {
-            StartCoroutine(PlayAnimationHelper("Pulled", true, 1));
+            StartCoroutine(PlayAnimationHelper("Pulled", true, 100));
         }
         #endregion
 
@@ -195,7 +192,7 @@ namespace Fall_Friends.Controllers
             // check whether the player is on the ground
             bool wasGrounded = Grounded;
 		    Grounded = false;
-            Collider[] colliders = Physics.OverlapSphere(groundCheck.position, groundCheckRadius, whatIsGround);
+            Collider[] colliders = Physics.OverlapSphere(_groundCheck.position, _groundCheckRadius, _whatIsGround);
             for (int i = 0; i < colliders.Length; i++) {
                 if (colliders[i].gameObject != gameObject) {
                     Grounded = true;
@@ -215,17 +212,18 @@ namespace Fall_Friends.Controllers
             }
             else {
                 Falling = false;
-                isPlayingFallingAnimation = false;
+                _isPlayingFallingAnimation = false;
             }
         }
 
         IEnumerator PlayFallingAnimation() {
-            if (isPlayingFallingAnimation) yield break;
-            isPlayingFallingAnimation = true;
+            if (_isPlayingFallingAnimation) yield break;
+            _isPlayingFallingAnimation = true;
 
+            Debug.Log("Playing falling animation");
             _animator.SetBool("Falling", true);
             // yield return 0;  // -> it is too short
-            yield return new WaitForSeconds(0.2f);
+            yield return new WaitForSeconds(0.5f); // 如果在这0.5秒内就落到地面上，动画会有延迟的感觉
             _animator.SetBool("Falling", false);
         }
 
