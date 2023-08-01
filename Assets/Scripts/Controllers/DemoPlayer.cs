@@ -47,6 +47,8 @@ namespace Fall_Friends.Controllers
         #region Variables
         private Animator _animator;
         private Rigidbody _rb;
+
+        private bool isPlayingFallingAnimation = false;
         #endregion
 
 
@@ -76,30 +78,13 @@ namespace Fall_Friends.Controllers
         {
             if (_rb == null) 
                 Debug.LogError("Body is null");
-            if (GameManager.Instance == null) 
-                Debug.LogError("GameManager instance is null");
+            
 
             base.FixedUpdate();
 
-            // check whether the player is on the ground
-            bool wasGrounded = Grounded;
-		    Grounded = false;
-            Collider[] colliders = Physics.OverlapSphere(groundCheck.position, groundCheckRadius, whatIsGround);
-            for (int i = 0; i < colliders.Length; i++) {
-                if (colliders[i].gameObject != gameObject) {
-                    Grounded = true;
-                    // if (!wasGrounded) {
-                    //     // TODO: ADD FALL/STOP FALLING ANIMATIONS
-                    //     _animator.SetBool("Falling", false);
-                    // }
-                }
-            }
+            GroundCheck();
 
-            if (!Grounded) Debug.Log("The player is not grounded");
-
-            if (_rb.velocity.y < -0.1)
-                Falling = true;
-            else Falling = false;
+            FallingCheck();
         }
 
         private IEnumerator OnCollisionEnter(Collision other) 
@@ -128,12 +113,7 @@ namespace Fall_Friends.Controllers
         }
 
         private void OnCollisionExit(Collision other)
-        {
-            if (other.gameObject.CompareTag("MiddleGround"))
-            {
-                // SwitchState(typeof(IdleState));
-            }
-            
+        {   
             if (other.gameObject.CompareTag("Ring")) 
             {
                 transform.SetParent(null);
@@ -143,13 +123,6 @@ namespace Fall_Friends.Controllers
         #endregion
 
         #region Push and Pull
-        private void Rotate() {
-            // transform.rotation = Quaternion.Slerp(
-            //     transform.rotation,
-            //     Quaternion.LookRotation(facingDir.normalized),
-            //     Time.deltaTime * rotationSpeed // May need to tune
-            // );
-        }
 
         public DemoPlayer GetNearestPlayer() {
             Collider[] colliders = Physics.OverlapSphere(transform.position, PushPullRadius);
@@ -214,21 +187,46 @@ namespace Fall_Friends.Controllers
         {
             StartCoroutine(PlayAnimationHelper("Pulled", true, 1));
         }
-
-        public void PlayFallingAnimation()
-        {
-            StartCoroutine(PlayAnimationHelper("Falling", true));
-        }
         #endregion
 
         #region Helper Functions
-        IEnumerator SwitchToDefendingStateHelper ()
-        {   
-            Debug.Log($"SwitchToDefend Helper, player is gounded? {Grounded}");
-            // for temporary debug purpose
-            float randomWaitTime = Random.Range(1.0f, 2.0f);
-            yield return new WaitForSeconds(20f);
-            SwitchState(typeof(DefendingState));
+
+        private void GroundCheck() {
+            // check whether the player is on the ground
+            bool wasGrounded = Grounded;
+		    Grounded = false;
+            Collider[] colliders = Physics.OverlapSphere(groundCheck.position, groundCheckRadius, whatIsGround);
+            for (int i = 0; i < colliders.Length; i++) {
+                if (colliders[i].gameObject != gameObject) {
+                    Grounded = true;
+                    if (!wasGrounded) {
+                        _animator.SetBool("Grounded", true);
+                    }
+                }
+            }
+
+            if (!Grounded) Debug.Log("The player is not grounded");
+        }
+
+        private void FallingCheck() {
+            if (_rb.velocity.y < -0.1) {
+                Falling = true;
+                StartCoroutine(PlayFallingAnimation());
+            }
+            else {
+                Falling = false;
+                isPlayingFallingAnimation = false;
+            }
+        }
+
+        IEnumerator PlayFallingAnimation() {
+            if (isPlayingFallingAnimation) yield break;
+            isPlayingFallingAnimation = true;
+
+            _animator.SetBool("Falling", true);
+            // yield return 0;  // -> it is too short
+            yield return new WaitForSeconds(0.2f);
+            _animator.SetBool("Falling", false);
         }
 
         IEnumerator PlayAnimationHelper(string name, bool onOff, float waitTime = 2.0f) {
