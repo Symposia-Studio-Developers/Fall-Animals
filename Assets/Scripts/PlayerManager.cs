@@ -10,8 +10,8 @@ public class PlayerManager : MonoBehaviour
     public List<DemoPlayer> playerDatas = new List<DemoPlayer>();
     public GameObject PlayerPrefab;
     public GameObject PlayersParent;
-    public Material[] SkinColors;
-    private int nextColorIndex = 0;
+    private int skinColorCount = 3; // TODO: change to actual color number later
+    private int nextSkinColorIndex = 0;
     
     // Start is called before the first frame update
     void Start()
@@ -33,14 +33,12 @@ public class PlayerManager : MonoBehaviour
         Vector3 vec3 = new Vector3(xPosition, yPosition, zPosition);
         GameObject newPlayer = Instantiate(PlayerPrefab, vec3, Quaternion.identity, PlayersParent.transform);
         newPlayer.name = playerId;
-        Renderer myRenderer = newPlayer.transform.FindChild("pCylinder1").gameObject.GetComponent<SkinnedMeshRenderer>();
-        myRenderer.material = SkinColors[nextColorIndex];
-        nextColorIndex++;
-        if (nextColorIndex == 3) nextColorIndex = 0; // change to actual skin color number later
         newPlayer.GetComponentInChildren<NametagController>().ApplyIcon(iconURL, playerId);
         DemoPlayer playerData = newPlayer.GetComponent<DemoPlayer>();
         playerData.IsActive = true;
         playerData.SetPlayerId(playerId);
+        playerData.SetSkinColorIndex(nextSkinColorIndex);
+        nextSkinColorIndex = (nextSkinColorIndex + 1) % skinColorCount;
         playerDatas.Add(playerData);
     }
 
@@ -64,6 +62,18 @@ public class PlayerManager : MonoBehaviour
             Debug.Log("player reset timer");
         }
     }
+    
+    public void giftReward(string playerId, string giftName)
+    {
+        GameObject playerToReward = GameObject.Find(playerId);
+        
+        //need to set up different gift levels
+        if (giftName == "") {
+            int currSkinColorIndex = playerToReward.GetComponent<DemoPlayer>().GetSkinColorIndex();
+            playerToReward.GetComponent<DemoPlayer>().SetSkinColorIndex((currSkinColorIndex + 1) % skinColorCount);
+        }
+    }
+    
     
     public string getRankingJson()
     {

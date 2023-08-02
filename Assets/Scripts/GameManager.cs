@@ -61,6 +61,7 @@ namespace Fall_Friends.Manager
                     else if (currRequest.action == "gift")
                     {
                         Debug.Log(currRequest.playerId + ": Send gift");
+                        players.GetComponent<PlayerManager>().giftReward(currRequest.playerId, currRequest.giftName);
                         // add code here
                     }
                     else if (currRequest.action == "sendDanmu")

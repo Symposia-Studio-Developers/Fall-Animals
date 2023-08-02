@@ -472,6 +472,10 @@ MonoBehaviour:
   MaxFreezeTime: 3
   PushCoolDown: 2
   PullCoolDown: 2
+  SkinColors:
+  - {fileID: 2100000, guid: 4532df46a68e70446bdf9659b47d9046, type: 2}
+  - {fileID: 2100000, guid: 4e45e548715621542acec76aeae29254, type: 2}
+  - {fileID: 2100000, guid: fb37e9b99056bbd4e90f97f8457518b7, type: 2}
   OnLandEvent:
     m_PersistentCalls:
       m_Calls: []
