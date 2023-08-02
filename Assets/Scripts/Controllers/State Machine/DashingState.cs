@@ -30,6 +30,7 @@ public class DashingState : BaseState
     public override void OnEnter() 
     {
         actor.GetComponent<Animator>().SetBool("Running", true);
+        actor.GetComponent<Animator>().SetFloat("RunningSpeed", speed);
         elapsedTime = 0.0f;
     }
 
@@ -81,12 +82,6 @@ public class DashingState : BaseState
         actor.PlayPullAnimation();
 
         // TODO: make sure the current player is facing the other player's direction
-        // Vector3 facingDir = otherPlayer.transform.position - actor.transform.position;
-        // actor.transform.rotation = Quaternion.Slerp(
-        //         actor.transform.rotation,
-        //         Quaternion.LookRotation(facingDir.normalized),
-        //         Time.deltaTime * rotationSpeed // May need to tune
-        //     );
         actor.transform.LookAt(otherPlayer.transform);
 
         // TODO: the other player gets pulled here
@@ -97,7 +92,7 @@ public class DashingState : BaseState
         // Move up and then in the direction of player
         Vector3 forceDirection = actor.transform.position - otherPlayer.transform.position;
 
-        otherPlayer.transform.DOMoveY(otherPlayer.transform.position.y + 4.0f, 0.2f).OnComplete(() => otherPlayer.transform.DOLocalMove(forceDirection.normalized + otherPlayer.transform.position, 0.2f));
+        otherPlayer.transform.DOMoveY(otherPlayer.transform.position.y + 4.0f, 0.2f).OnComplete(() => otherPlayer.transform.DOLocalMove(forceDirection.normalized + otherPlayer.transform.position + new Vector3(0, 0, -1), 0.2f));
 
     }
 
@@ -111,5 +106,6 @@ public class DashingState : BaseState
     public override void OnExit() 
     {
         actor.GetComponent<Animator>().SetBool("Running", false);
+        actor.GetComponent<Animator>().SetFloat("RunningSpeed", 1);
     }
 }

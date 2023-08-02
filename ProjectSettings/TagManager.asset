@@ -7,6 +7,7 @@ TagManager:
   - Platform
   - MiddleGround
   - Ring
+  - Edge
   layers:
   - Default
   - TransparentFX

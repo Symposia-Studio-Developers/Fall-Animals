@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Fall_Friends.States;
+using Fall_Friends.Manager;
 
 namespace Fall_Friends.Controllers {
     public abstract class BaseAI : MonoBehaviour
@@ -31,10 +32,11 @@ namespace Fall_Friends.Controllers {
 
         protected virtual void FixedUpdate() 
         {
+            if (GameManager.Instance == null) 
+                Debug.LogError("GameManager instance is null");
+            
             if (currentState == null) 
-            {
                 Debug.LogError($"State machine not initialized for {this.name}");
-            }
             if (!doTick) return;
 
             currentState.FrameUpdate();

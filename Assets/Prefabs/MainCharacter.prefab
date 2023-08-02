@@ -459,11 +459,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   doTick: 1
-  whatIsGround:
+  _whatIsGround:
     serializedVersion: 2
     m_Bits: 64
-  groundCheck: {fileID: 309742807}
-  groundCheckRadius: 0.3
+  _groundCheck: {fileID: 309742807}
+  _groundCheckRadius: 0.3
   PushPullRadius: 1.5
   PushForce: 20
   MaxIdleSpeed: 1
@@ -478,7 +478,19 @@ MonoBehaviour:
   - {fileID: 2100000, guid: fb37e9b99056bbd4e90f97f8457518b7, type: 2}
   OnLandEvent:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 745427524}
+        m_TargetAssemblyTypeName: Fall_Friends.Controllers.DemoPlayer, Assembly-CSharp
+        m_MethodName: ToggleOnLandEvent
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   _playerId: 
   IsActive: 0
 --- !u!1 &3332415997151821435
