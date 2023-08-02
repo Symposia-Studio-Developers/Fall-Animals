@@ -64,11 +64,6 @@ namespace Fall_Friends.Controllers
             if (IsActive) SwitchState(typeof(DashingState)); 
         }
 
-        protected override void Update()
-        {
-            base.Update();
-        }
-
         protected override void FixedUpdate()
         {
             if (_rb == null) 
@@ -202,7 +197,9 @@ namespace Fall_Friends.Controllers
                 }
             }
 
-            if (!Grounded) Debug.Log("The player is not grounded");
+            if (!Grounded) {
+                Debug.Log("The player is not grounded");
+            }
         }
 
         private void FallingCheck() {
@@ -220,10 +217,9 @@ namespace Fall_Friends.Controllers
             if (_isPlayingFallingAnimation) yield break;
             _isPlayingFallingAnimation = true;
 
-            Debug.Log("Playing falling animation");
+            _animator.Play("StartFalling"); // NECESSARY: force the animation to start playing falling animation
             _animator.SetBool("Falling", true);
-            // yield return 0;  // -> it is too short
-            yield return new WaitForSeconds(0.5f); // 如果在这0.5秒内就落到地面上，动画会有延迟的感觉
+            yield return 0;
             _animator.SetBool("Falling", false);
         }
 
