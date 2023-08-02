@@ -10,6 +10,8 @@ public class PlayerManager : MonoBehaviour
     public List<DemoPlayer> playerDatas = new List<DemoPlayer>();
     public GameObject PlayerPrefab;
     public GameObject PlayersParent;
+    private int skinColorCount = 3; // TODO: change to actual color number later
+    private int nextSkinColorIndex = 0;
     
     // Start is called before the first frame update
     void Start()
@@ -35,6 +37,8 @@ public class PlayerManager : MonoBehaviour
         DemoPlayer playerData = newPlayer.GetComponent<DemoPlayer>();
         playerData.IsActive = true;
         playerData.SetPlayerId(playerId);
+        playerData.SetSkinColorIndex(nextSkinColorIndex);
+        nextSkinColorIndex = (nextSkinColorIndex + 1) % skinColorCount;
         playerDatas.Add(playerData);
     }
 
@@ -58,6 +62,18 @@ public class PlayerManager : MonoBehaviour
             Debug.Log("player reset timer");
         }
     }
+    
+    public void giftReward(string playerId, string giftName)
+    {
+        GameObject playerToReward = GameObject.Find(playerId);
+        
+        //need to set up different gift levels
+        if (giftName == "") {
+            int currSkinColorIndex = playerToReward.GetComponent<DemoPlayer>().GetSkinColorIndex();
+            playerToReward.GetComponent<DemoPlayer>().SetSkinColorIndex((currSkinColorIndex + 1) % skinColorCount);
+        }
+    }
+    
     
     public string getRankingJson()
     {

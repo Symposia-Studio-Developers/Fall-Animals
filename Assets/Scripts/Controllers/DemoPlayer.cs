@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using UnityEngine;
 using Fall_Friends.States;
 using System.Collections.Generic;
@@ -31,6 +31,9 @@ namespace Fall_Friends.Controllers
         public float MaxFreezeTime = 3f;
         public float PushCoolDown = 4f;
         public float PullCoolDown = 4f;
+        
+        [Header("Skin")]
+        public Material[] SkinColors;
 
         [Header("Debug")]
         [SerializeField] private string _playerId;// unique playerId parsed from tiktok
@@ -42,6 +45,7 @@ namespace Fall_Friends.Controllers
         #region Variables
         private Animator _animator;
         private Rigidbody _rb;
+        private int SkinColorIndex;
 
         private bool _isPlayingFallingAnimation = false;
         #endregion
@@ -241,6 +245,15 @@ namespace Fall_Friends.Controllers
 
         public void ResetTimer() {
             SwitchState(typeof(DashingState));
+        }
+        
+        public int GetSkinColorIndex() {
+            return SkinColorIndex;
+        }
+        
+        public void SetSkinColorIndex(int skinColorIndex) {
+            SkinColorIndex = skinColorIndex;
+            gameObject.transform.FindChild("pCylinder1").gameObject.GetComponent<SkinnedMeshRenderer>().material = SkinColors[skinColorIndex];
         }
 
         public int getScore() {

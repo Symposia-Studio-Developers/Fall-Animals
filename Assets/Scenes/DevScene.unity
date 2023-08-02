@@ -702,6 +702,10 @@ MonoBehaviour:
   playerDatas: []
   PlayerPrefab: {fileID: 3066970386738683065, guid: 0df6fcb351a7f454292880bbbb2b9aee, type: 3}
   PlayersParent: {fileID: 832547399}
+  SkinColors:
+  - {fileID: 2100000, guid: 4532df46a68e70446bdf9659b47d9046, type: 2}
+  - {fileID: 2100000, guid: 4e45e548715621542acec76aeae29254, type: 2}
+  - {fileID: 2100000, guid: fb37e9b99056bbd4e90f97f8457518b7, type: 2}
 --- !u!1 &835387680
 GameObject:
   m_ObjectHideFlags: 0
