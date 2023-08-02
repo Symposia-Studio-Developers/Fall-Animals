@@ -84,10 +84,8 @@ public class DashingState : BaseState
         // TODO: make sure the current player is facing the other player's direction
         actor.transform.LookAt(otherPlayer.transform);
 
-        // TODO: the other player gets pulled here
         otherPlayer.SwitchState(typeof(FrozenState));
-        // otherPlayer.PlayPulledAnimation();
-        // otherPlayer.GetComponent<Animator>().SetBool("Pulled", true);
+        otherPlayer.PlayPulledAnimation();
 
         // Move up and then in the direction of player
         Vector3 forceDirection = actor.transform.position - otherPlayer.transform.position;

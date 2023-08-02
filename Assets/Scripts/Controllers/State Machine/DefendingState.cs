@@ -74,11 +74,7 @@ public class DefendingState : BaseState
         Debug.Log($"{actor.name} is pushing the other player {otherPlayer.name}");
         actor.PlayPushAnimation();
         Vector3 forceDirection = otherPlayer.transform.position - actor.transform.position;
-        // actor.transform.rotation = Quaternion.Slerp(
-        //         actor.transform.rotation,
-        //         Quaternion.LookRotation(forceDirection.normalized),
-        //         Time.deltaTime * rotationSpeed // May need to tune
-        //     );
+        forceDirection.y = 0;
         actor.transform.LookAt(otherPlayer.transform);
 
         otherPlayer.SwitchState(typeof(FrozenState));

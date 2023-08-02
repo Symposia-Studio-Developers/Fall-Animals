@@ -181,7 +181,14 @@ namespace Fall_Friends.Controllers
 
         public void PlayPulledAnimation()
         {
-            StartCoroutine(PlayAnimationHelper("Pulled", true, 100));
+            StartCoroutine(PlayPulledAnimationHelper());
+        }
+
+        IEnumerator PlayPulledAnimationHelper() {
+            _animator.Play("PulledBack");
+            _animator.SetBool("Pulled", true);
+            yield return 0;
+            _animator.SetBool("Pulled", false);
         }
         #endregion
 
@@ -227,9 +234,9 @@ namespace Fall_Friends.Controllers
             _animator.SetBool("Falling", false);
         }
 
-        IEnumerator PlayAnimationHelper(string name, bool onOff, float waitTime = 2.0f) {
+        IEnumerator PlayAnimationHelper(string name, bool onOff) {
             _animator.SetBool(name, onOff);
-            yield return new WaitForSeconds(Time.deltaTime * waitTime); // pause for one frame
+            yield return 0;
             _animator.SetBool(name, !onOff);
         }
         #endregion
@@ -253,7 +260,7 @@ namespace Fall_Friends.Controllers
         
         public void SetSkinColorIndex(int skinColorIndex) {
             SkinColorIndex = skinColorIndex;
-            gameObject.transform.FindChild("pCylinder1").gameObject.GetComponent<SkinnedMeshRenderer>().material = SkinColors[skinColorIndex];
+            gameObject.transform.Find("pCylinder1").gameObject.GetComponent<SkinnedMeshRenderer>().material = SkinColors[skinColorIndex];
         }
 
         public int getScore() {
