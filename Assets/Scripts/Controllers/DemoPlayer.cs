@@ -30,6 +30,7 @@ namespace Fall_Friends.Controllers
         public float MaxFreezeTime = 3f;
         public float PushCoolDown = 4f;
         public float PullCoolDown = 4f;
+        public float glowEffectDuration = 10f;
         
         [Header("Skin")]
         public Material[] SkinColors;
@@ -58,6 +59,8 @@ namespace Fall_Friends.Controllers
         private bool _isPlayingFallingAnimation = false;
         public bool OnMiddleGround {get; private set;}
         private float _likeElapsedTimer = 0.0f;
+        private bool _isGlowing = false;
+        private float _glowTimer = 0.0f;
         #endregion
 
 
@@ -85,7 +88,13 @@ namespace Fall_Friends.Controllers
                 if (_likeElapsedTimer > MaxLikeDuration)
                     SwitchState(typeof(IdleState));
             }
-
+            
+            if(_isGlowing) {
+                _glowTimer += Time.deltaTime;
+                if (_glowTimer > glowEffectDuration)
+                    StopGlowEffect();
+            }
+            
             base.Update();
         }
 
@@ -282,11 +291,21 @@ namespace Fall_Friends.Controllers
         
         public void SetSkinColorIndex(int skinColorIndex) {
             SkinColorIndex = skinColorIndex;
-            gameObject.transform.Find("pCylinder1").gameObject.GetComponent<SkinnedMeshRenderer>().material = SkinColors[skinColorIndex];
+            if (_isGlowing)
+                gameObject.transform.Find("pCylinder1").gameObject.GetComponent<SkinnedMeshRenderer>().material = SkinGlows[skinColorIndex];
+            else
+                gameObject.transform.Find("pCylinder1").gameObject.GetComponent<SkinnedMeshRenderer>().material = SkinColors[skinColorIndex];
         }
         
-        public void Glow() {
+        public void StartGlowEffect() {
             gameObject.transform.Find("pCylinder1").gameObject.GetComponent<SkinnedMeshRenderer>().material = SkinGlows[SkinColorIndex];
+            _isGlowing = true;
+            _glowTimer = 0f;
+        }
+        
+        public void StopGlowEffect() {
+            gameObject.transform.Find("pCylinder1").gameObject.GetComponent<SkinnedMeshRenderer>().material = SkinColors[SkinColorIndex];
+            _isGlowing = false;
         }
 
         public int getScore() {

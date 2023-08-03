@@ -73,7 +73,7 @@ public class PlayerManager : MonoBehaviour
             playerToReward.GetComponent<DemoPlayer>().SetSkinColorIndex((currSkinColorIndex + 1) % skinColorCount);
         }
         else if (giftName == "Rose") {
-            playerToReward.GetComponent<DemoPlayer>().Glow();
+            playerToReward.GetComponent<DemoPlayer>().StartGlowEffect();
         }
     }
     
