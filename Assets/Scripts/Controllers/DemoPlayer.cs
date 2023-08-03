@@ -33,6 +33,7 @@ namespace Fall_Friends.Controllers
         
         [Header("Skin")]
         public Material[] SkinColors;
+        public Material[] SkinGlows;
 
         #region Variables for Bot
         [Header("Bot")]
@@ -282,6 +283,10 @@ namespace Fall_Friends.Controllers
         public void SetSkinColorIndex(int skinColorIndex) {
             SkinColorIndex = skinColorIndex;
             gameObject.transform.Find("pCylinder1").gameObject.GetComponent<SkinnedMeshRenderer>().material = SkinColors[skinColorIndex];
+        }
+        
+        public void Glow() {
+            gameObject.transform.Find("pCylinder1").gameObject.GetComponent<SkinnedMeshRenderer>().material = SkinGlows[SkinColorIndex];
         }
 
         public int getScore() {

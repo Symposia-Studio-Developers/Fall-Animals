@@ -72,6 +72,9 @@ public class PlayerManager : MonoBehaviour
             int currSkinColorIndex = playerToReward.GetComponent<DemoPlayer>().GetSkinColorIndex();
             playerToReward.GetComponent<DemoPlayer>().SetSkinColorIndex((currSkinColorIndex + 1) % skinColorCount);
         }
+        else if (giftName == "Rose") {
+            playerToReward.GetComponent<DemoPlayer>().Glow();
+        }
     }
     
     

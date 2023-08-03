@@ -476,6 +476,10 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 4532df46a68e70446bdf9659b47d9046, type: 2}
   - {fileID: 2100000, guid: 4e45e548715621542acec76aeae29254, type: 2}
   - {fileID: 2100000, guid: fb37e9b99056bbd4e90f97f8457518b7, type: 2}
+  SkinGlows:
+  - {fileID: 2100000, guid: 0d7fbc8a9fa8b0344b1a3b3c923aa29d, type: 2}
+  - {fileID: 2100000, guid: 3e594466c2f41064e8bded20fa8f21f3, type: 2}
+  - {fileID: 2100000, guid: 0127333a09217614da4d068592dbb50f, type: 2}
   IsBot: 0
   IdleToDashCoolDown: 3
   _playerId: 
@@ -711,7 +715,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.7529412}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.2784314}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
