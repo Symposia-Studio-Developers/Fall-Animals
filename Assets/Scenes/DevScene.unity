@@ -192,6 +192,22 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 745427524, guid: 0df6fcb351a7f454292880bbbb2b9aee, type: 3}
+      propertyPath: IsBot
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 745427524, guid: 0df6fcb351a7f454292880bbbb2b9aee, type: 3}
+      propertyPath: isBot
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 745427524, guid: 0df6fcb351a7f454292880bbbb2b9aee, type: 3}
+      propertyPath: _playerId
+      value: C
+      objectReference: {fileID: 0}
+    - target: {fileID: 1802765432, guid: 0df6fcb351a7f454292880bbbb2b9aee, type: 3}
+      propertyPath: m_Constraints
+      value: 80
+      objectReference: {fileID: 0}
     - target: {fileID: 2439756918416459267, guid: 0df6fcb351a7f454292880bbbb2b9aee, type: 3}
       propertyPath: m_RootOrder
       value: 11
@@ -702,10 +718,6 @@ MonoBehaviour:
   playerDatas: []
   PlayerPrefab: {fileID: 3066970386738683065, guid: 0df6fcb351a7f454292880bbbb2b9aee, type: 3}
   PlayersParent: {fileID: 832547399}
-  SkinColors:
-  - {fileID: 2100000, guid: 4532df46a68e70446bdf9659b47d9046, type: 2}
-  - {fileID: 2100000, guid: 4e45e548715621542acec76aeae29254, type: 2}
-  - {fileID: 2100000, guid: fb37e9b99056bbd4e90f97f8457518b7, type: 2}
 --- !u!1 &835387680
 GameObject:
   m_ObjectHideFlags: 0
@@ -1159,12 +1171,20 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 745427524, guid: 0df6fcb351a7f454292880bbbb2b9aee, type: 3}
-      propertyPath: IsActive
+      propertyPath: IsBot
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 745427524, guid: 0df6fcb351a7f454292880bbbb2b9aee, type: 3}
+      propertyPath: isBot
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 745427524, guid: 0df6fcb351a7f454292880bbbb2b9aee, type: 3}
+      propertyPath: IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 745427524, guid: 0df6fcb351a7f454292880bbbb2b9aee, type: 3}
       propertyPath: _playerId
-      value: CDA
+      value: B
       objectReference: {fileID: 0}
     - target: {fileID: 745427524, guid: 0df6fcb351a7f454292880bbbb2b9aee, type: 3}
       propertyPath: _groundCheck
@@ -1177,6 +1197,10 @@ PrefabInstance:
     - target: {fileID: 745427524, guid: 0df6fcb351a7f454292880bbbb2b9aee, type: 3}
       propertyPath: _whatIsGround.m_Bits
       value: 64
+      objectReference: {fileID: 0}
+    - target: {fileID: 1802765432, guid: 0df6fcb351a7f454292880bbbb2b9aee, type: 3}
+      propertyPath: m_Constraints
+      value: 80
       objectReference: {fileID: 0}
     - target: {fileID: 2439756918416459267, guid: 0df6fcb351a7f454292880bbbb2b9aee, type: 3}
       propertyPath: m_RootOrder
@@ -1495,12 +1519,16 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 745427524, guid: 0df6fcb351a7f454292880bbbb2b9aee, type: 3}
-      propertyPath: IsActive
+      propertyPath: IsBot
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 745427524, guid: 0df6fcb351a7f454292880bbbb2b9aee, type: 3}
       propertyPath: _playerId
-      value: AABBC
+      value: A
+      objectReference: {fileID: 0}
+    - target: {fileID: 1802765432, guid: 0df6fcb351a7f454292880bbbb2b9aee, type: 3}
+      propertyPath: m_Constraints
+      value: 80
       objectReference: {fileID: 0}
     - target: {fileID: 2439756918416459267, guid: 0df6fcb351a7f454292880bbbb2b9aee, type: 3}
       propertyPath: m_RootOrder

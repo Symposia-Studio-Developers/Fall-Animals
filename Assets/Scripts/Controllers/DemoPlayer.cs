@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Collections;
 using Random = UnityEngine.Random;
 using Fall_Friends.Manager;
-using UnityEngine.Events;
 
 namespace Fall_Friends.Controllers
 {
@@ -35,6 +34,14 @@ namespace Fall_Friends.Controllers
         [Header("Skin")]
         public Material[] SkinColors;
 
+        #region Variables for Bot
+        [Header("Bot")]
+        public bool IsBot = false;
+        public float IdleToDashCoolDown = 3.0f; 
+        
+        private float _idleToDashTimer = 0.0f;
+        #endregion
+
         [Header("Debug")]
         [SerializeField] private string _playerId;// unique playerId parsed from tiktok
         //note, exposing playerId as a public variable now to set it in Unity's inspector for testing and initial setup, 
@@ -48,24 +55,37 @@ namespace Fall_Friends.Controllers
         private int SkinColorIndex;
 
         private bool _isPlayingFallingAnimation = false;
+        public bool OnMiddleGround {get; private set;}
+        private float _likeElapsedTimer = 0.0f;
         #endregion
 
 
         #region Unity Functions
         protected override void Start() {
-            currentState = new IdleState(this, MaxIdleSpeed);
+            currentState = new IdleState(this, MaxIdleSpeed, IdleToDashCoolDown);
 
             availableStates = new Dictionary<Type, BaseState>() {
                 {typeof(IdleState), currentState}, 
-                {typeof(DashingState), new DashingState(this, MaxLikeDuration, PullCoolDown, MaxActiveSpeed)}, 
-                {typeof(DefendingState), new DefendingState(this, MaxLikeDuration, PushCoolDown, PushForce, PushPullRadius)},
+                {typeof(DashingState), new DashingState(this, PullCoolDown, PushPullRadius, MaxActiveSpeed)}, 
+                {typeof(DefendingState), new DefendingState(this, PushCoolDown, PushForce, PushPullRadius, MaxActiveSpeed)},
                 {typeof(FrozenState), new FrozenState(this, MaxFreezeTime)}
             };
 
             _animator = GetComponent<Animator>();
             _rb = GetComponent<Rigidbody>();
 
-            if (IsActive) SwitchState(typeof(DashingState)); 
+            // if (IsActive) SwitchState(typeof(DashingState)); 
+        }
+
+        protected override void Update()
+        {
+            if(!IsBot) {
+                _likeElapsedTimer += Time.deltaTime;
+                if (_likeElapsedTimer > MaxLikeDuration)
+                    SwitchState(typeof(IdleState));
+            }
+
+            base.Update();
         }
 
         protected override void FixedUpdate()
@@ -73,34 +93,19 @@ namespace Fall_Friends.Controllers
             if (_rb == null) 
                 Debug.LogError("Body is null");
             
-
-            base.FixedUpdate();
-
             GroundCheck();
 
             FallingCheck();
+
+            MiddleGroundCheck();
+
+            base.FixedUpdate();
         }
 
         #region Collision Functions
-        private IEnumerator OnCollisionEnter(Collision other) 
-        {
-            if (other.gameObject.CompareTag("MiddleGround")) 
-            {
-                float randomWaitTime = Random.Range(1.0f, 2.0f);
-                yield return new WaitForSeconds(randomWaitTime);
-                SwitchState(typeof(DefendingState));
-            }
-        }
 
         private void OnCollisionStay(Collision other)
-        {
-            if (other.gameObject.CompareTag("MiddleGround"))
-            {
-                _rb.mass = _rb.mass * 1.0001f;
-                var trans = _rb.transform;
-                trans.localScale = trans.localScale * 1.0001f;
-            }
-            
+        {   
             if (other.gameObject.CompareTag("Ring")) 
             {
                 transform.SetParent(other.gameObject.transform);
@@ -120,8 +125,8 @@ namespace Fall_Friends.Controllers
 
         #region Push and Pull
 
-        public DemoPlayer GetNearestPlayer() {
-            Collider[] colliders = Physics.OverlapSphere(transform.position, PushPullRadius);
+        public DemoPlayer GetNearestPlayer(float pushRadius) {
+            Collider[] colliders = Physics.OverlapSphere(transform.position, pushRadius);
             if (colliders.Length == 0) return null; // no nearby players
 
             DemoPlayer nearest = null; // otherwise, find the nearest
@@ -141,8 +146,8 @@ namespace Fall_Friends.Controllers
             return nearest;
         }
 
-        public DemoPlayer GetNearestPlayerFacingFront() {
-            Collider[] colliders = Physics.OverlapSphere(transform.position, PushPullRadius);
+        public DemoPlayer GetNearestPlayerFacingFront(float pullRadius) {
+            Collider[] colliders = Physics.OverlapSphere(transform.position, pullRadius);
             if (colliders.Length == 0) return null;
 
             Vector3 mgrPos = GameManager.Instance.transform.position;
@@ -190,9 +195,38 @@ namespace Fall_Friends.Controllers
             yield return 0;
             _animator.SetBool("Pulled", false);
         }
+
+        IEnumerator PlayFallingAnimation() {
+            if (_isPlayingFallingAnimation) yield break;
+            _isPlayingFallingAnimation = true;
+
+            _animator.Play("StartFalling"); // NECESSARY: force the animation to start playing falling animation
+            _animator.SetBool("Falling", true);
+            yield return 0;
+            _animator.SetBool("Falling", false);
+        }
+
+        IEnumerator PlayAnimationHelper(string name, bool onOff) {
+            _animator.SetBool(name, onOff);
+            yield return 0;
+            _animator.SetBool(name, !onOff);
+        }
         #endregion
 
         #region Helper Functions
+
+        private void MiddleGroundCheck() {
+            if (!Grounded) return;
+
+            RaycastHit hit;
+            if (Physics.Raycast(transform.position, -Vector3.up, out hit)) {
+                // Debug.Log($"Found an object {hit.collider.name}, with distanc {hit.distance}");
+                Debug.DrawRay(transform.position, -Vector3.up * 100, Color.green);
+                if (hit.collider.CompareTag("MiddleGround"))
+                    OnMiddleGround = true;
+                else OnMiddleGround = false;
+            }
+        }
 
         private void GroundCheck() {
             // check whether the player is on the ground
@@ -214,7 +248,7 @@ namespace Fall_Friends.Controllers
         }
 
         private void FallingCheck() {
-            if (_rb.velocity.y < -0.1) {
+            if (_rb.velocity.y < -0.1 && !Grounded) {
                 Falling = true;
                 StartCoroutine(PlayFallingAnimation());
             }
@@ -222,22 +256,6 @@ namespace Fall_Friends.Controllers
                 Falling = false;
                 _isPlayingFallingAnimation = false;
             }
-        }
-
-        IEnumerator PlayFallingAnimation() {
-            if (_isPlayingFallingAnimation) yield break;
-            _isPlayingFallingAnimation = true;
-
-            _animator.Play("StartFalling"); // NECESSARY: force the animation to start playing falling animation
-            _animator.SetBool("Falling", true);
-            yield return 0;
-            _animator.SetBool("Falling", false);
-        }
-
-        IEnumerator PlayAnimationHelper(string name, bool onOff) {
-            _animator.SetBool(name, onOff);
-            yield return 0;
-            _animator.SetBool(name, !onOff);
         }
         #endregion
 
@@ -251,7 +269,10 @@ namespace Fall_Friends.Controllers
         }
 
         public void ResetTimer() {
-            SwitchState(typeof(DashingState));
+            if (CurrentState == "IdleState") {
+                _likeElapsedTimer = 0f;
+                SwitchState(typeof(DashingState));
+            }
         }
         
         public int GetSkinColorIndex() {

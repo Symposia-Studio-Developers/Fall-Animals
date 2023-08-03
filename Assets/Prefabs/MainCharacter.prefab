@@ -442,10 +442,10 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.94793653
-  m_Height: 3.3941398
+  m_Radius: 0.96566796
+  m_Height: 3.2506564
   m_Direction: 1
-  m_Center: {x: 0.30455875, y: -0.13204575, z: 0.14337756}
+  m_Center: {x: -0.022957504, y: -0.060304046, z: -0.023276567}
 --- !u!114 &745427524
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -464,8 +464,8 @@ MonoBehaviour:
     m_Bits: 64
   _groundCheck: {fileID: 309742807}
   _groundCheckRadius: 0.3
-  PushPullRadius: 1.5
-  PushForce: 20
+  PushPullRadius: 2
+  PushForce: 30
   MaxIdleSpeed: 1
   MaxActiveSpeed: 3
   MaxLikeDuration: 10
@@ -476,21 +476,8 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 4532df46a68e70446bdf9659b47d9046, type: 2}
   - {fileID: 2100000, guid: 4e45e548715621542acec76aeae29254, type: 2}
   - {fileID: 2100000, guid: fb37e9b99056bbd4e90f97f8457518b7, type: 2}
-  OnLandEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 745427524}
-        m_TargetAssemblyTypeName: Fall_Friends.Controllers.DemoPlayer, Assembly-CSharp
-        m_MethodName: ToggleOnLandEvent
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+  IsBot: 0
+  IdleToDashCoolDown: 3
   _playerId: 
   IsActive: 0
 --- !u!1 &3332415997151821435

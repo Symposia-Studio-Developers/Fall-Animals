@@ -11,52 +11,58 @@ public class DashingState : BaseState
     private readonly float likeTimer;
     private readonly float pullTimer;
     private readonly float speed;
+    private readonly float pullRadius;
 
-    private float elapsedTime; // like elapsed time
     private float pullElapsedTime;
     private Vector3 moveDir;
+    private Animator animator;
 
     private const float rotationSpeed = 1.5f;
 
-    public DashingState(DemoPlayer actor, float likeTimer, float pullTimer, float speed) 
+    public DashingState(DemoPlayer actor, float pullTimer, float pullRadius, float speed) 
     {
         this.actor = actor;
-        this.likeTimer = likeTimer;
         this.pullTimer = pullTimer;
         this.speed = speed;
         this.pullElapsedTime = pullTimer;
+        this.pullRadius = pullRadius;
+        this.animator = actor.GetComponent<Animator>();
     }
 
     public override void OnEnter() 
     {
-        actor.GetComponent<Animator>().SetBool("Running", true);
-        actor.GetComponent<Animator>().SetFloat("RunningSpeed", speed);
-        elapsedTime = 0.0f;
+        // if (this.animator.GetBool("Grounded"))
+        //     this.animator.SetBool("Grounded", false);
+        this.animator.SetBool("Running", true);
+        this.animator.SetFloat("RunningSpeed", speed);
     }
 
     public override Type Tick() 
     {
-        // switch to Idle if the player is not liking
-        elapsedTime += Time.deltaTime;
-        if (elapsedTime > likeTimer) 
-            return typeof(IdleState);
-
-        // perform pulling action
-        pullElapsedTime += Time.deltaTime;
-
         // if not grounded, do nothing
         if (!actor.Grounded) return null;
 
+        if (actor.OnMiddleGround) 
+            return typeof(DefendingState);
+
         Move();
-        if (pullElapsedTime > pullTimer) 
-        {
-            pullElapsedTime = 0.0f;
-            var nearestPlayer = actor.GetNearestPlayerFacingFront();
-            if (nearestPlayer != null) 
-                Pull(nearestPlayer);
-        }
-        
+
+        Pull();
+
         return null;
+    }
+
+    public override void FrameUpdate()
+    {
+        if (actor.Grounded) {
+            actor.transform.position += moveDir * speed * Time.fixedDeltaTime;
+        }
+    }
+
+    public override void OnExit() 
+    {
+        this.animator.SetBool("Running", false);
+        this.animator.SetFloat("RunningSpeed", 1);
     }
 
     private void Move () {
@@ -76,9 +82,21 @@ public class DashingState : BaseState
         }
     }
 
-    private void Pull(DemoPlayer otherPlayer)
+    private void Pull () {
+        // perform pulling action
+        pullElapsedTime += Time.deltaTime;
+        if (pullElapsedTime > pullTimer) 
+        {
+            pullElapsedTime = 0.0f;
+            var nearestPlayer = actor.GetNearestPlayerFacingFront(pullRadius);
+            if (nearestPlayer != null) 
+                PullHelper(nearestPlayer);
+        }
+    }
+
+    private void PullHelper(DemoPlayer otherPlayer)
     {
-        Debug.Log($"{actor.name} is pulling the other player {otherPlayer.name}");
+        Debug.Log($"{actor.GetPlayerId()} is pulling the other player {otherPlayer.GetPlayerId()}");
         actor.PlayPullAnimation();
 
         // TODO: make sure the current player is facing the other player's direction
@@ -92,18 +110,5 @@ public class DashingState : BaseState
 
         otherPlayer.transform.DOMoveY(otherPlayer.transform.position.y + 4.0f, 0.2f).OnComplete(() => otherPlayer.transform.DOLocalMove(forceDirection.normalized + otherPlayer.transform.position + new Vector3(0, 0, -1), 0.2f));
 
-    }
-
-    public override void FrameUpdate()
-    {
-        if (actor.Grounded) {
-            actor.transform.position += moveDir * speed * Time.fixedDeltaTime;
-        }
-    }
-
-    public override void OnExit() 
-    {
-        actor.GetComponent<Animator>().SetBool("Running", false);
-        actor.GetComponent<Animator>().SetFloat("RunningSpeed", 1);
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Fall_Friends.States;
 using Fall_Friends.Manager;
+using System.Collections;
 
 namespace Fall_Friends.Controllers {
     public abstract class BaseAI : MonoBehaviour
@@ -13,9 +14,10 @@ namespace Fall_Friends.Controllers {
         public String CurrentState => currentState?.GetType().Name;
 
         [SerializeField] protected bool doTick = true; // pause updates or not
+        
 
-        public bool Grounded {get; set;}
-        public bool Falling {get; set;}
+        public bool Grounded {get; protected set;}
+        public bool Falling {get; protected set;}
 
         protected virtual void Start() {}
 

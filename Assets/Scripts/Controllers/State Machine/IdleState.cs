@@ -9,15 +9,29 @@ public class IdleState : BaseState
 {
     private readonly DemoPlayer actor;
     private readonly float speed;
+    private readonly float _idleToDashCoolDown;
 
-    public IdleState(DemoPlayer actor, float speed) 
+    private float _idleToDashTimer;
+
+    public IdleState(DemoPlayer actor, float speed, float IdleToDashCoolDown) 
     {
         this.actor = actor;
         this.speed = speed;
     }
 
     public override Type Tick()
-    {
+    {       
+        if (actor.IsBot) {
+            if (actor.Grounded) {
+                _idleToDashTimer += Time.deltaTime;
+                if (_idleToDashTimer > _idleToDashCoolDown) {
+                    return typeof(DashingState);
+                }
+            }
+        }
+
+        if (actor.OnMiddleGround)
+            return typeof(DefendingState);
         return null;
     }
     
