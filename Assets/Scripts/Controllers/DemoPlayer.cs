@@ -291,10 +291,11 @@ namespace Fall_Friends.Controllers
         
         public void SetSkinColorIndex(int skinColorIndex) {
             SkinColorIndex = skinColorIndex;
+            Material skinMaterial = gameObject.transform.Find("pCylinder1").gameObject.GetComponent<SkinnedMeshRenderer>().material;
             if (_isGlowing)
-                gameObject.transform.Find("pCylinder1").gameObject.GetComponent<SkinnedMeshRenderer>().material = SkinGlows[skinColorIndex];
+                skinMaterial = SkinGlows[skinColorIndex];
             else
-                gameObject.transform.Find("pCylinder1").gameObject.GetComponent<SkinnedMeshRenderer>().material = SkinColors[skinColorIndex];
+                skinMaterial = SkinColors[skinColorIndex];
         }
         
         public void StartGlowEffect() {
@@ -306,6 +307,13 @@ namespace Fall_Friends.Controllers
         public void StopGlowEffect() {
             gameObject.transform.Find("pCylinder1").gameObject.GetComponent<SkinnedMeshRenderer>().material = SkinColors[SkinColorIndex];
             _isGlowing = false;
+        }
+        
+        public void GrowSize(float multiple) {
+            Rigidbody rb = gameObject.GetComponent<Rigidbody>();
+            rb.mass = rb.mass * multiple;
+            var trans = rb.transform;
+            trans.localScale = trans.localScale * multiple;
         }
 
         public int getScore() {

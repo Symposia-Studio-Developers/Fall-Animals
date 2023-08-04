@@ -65,15 +65,18 @@ public class PlayerManager : MonoBehaviour
     
     public void giftReward(string playerId, string giftName)
     {
-        GameObject playerToReward = GameObject.Find(playerId);
+        DemoPlayer playerToReward = GameObject.Find(playerId).GetComponent<DemoPlayer>();
         
         //need to set up different gift levels
         if (giftName == "") {
-            int currSkinColorIndex = playerToReward.GetComponent<DemoPlayer>().GetSkinColorIndex();
-            playerToReward.GetComponent<DemoPlayer>().SetSkinColorIndex((currSkinColorIndex + 1) % skinColorCount);
+            int currSkinColorIndex = playerToReward.GetSkinColorIndex();
+            playerToReward.SetSkinColorIndex((currSkinColorIndex + 1) % skinColorCount);
         }
         else if (giftName == "Rose") {
-            playerToReward.GetComponent<DemoPlayer>().StartGlowEffect();
+            playerToReward.StartGlowEffect();
+        }
+        else if (giftName == "Star") {
+            playerToReward.GrowSize(1.5f);
         }
     }
     
