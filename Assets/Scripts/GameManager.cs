@@ -90,9 +90,9 @@ namespace Fall_Friends.Manager
             _cameraSwitchTimer += Time.deltaTime;
             if (_cameraSwitchTimer > _cameraTime[_currCameraIndex])
             {
-                Camera.current.gameObject.SetActive(false);
-                _cameras[_currCameraIndex].gameObject.SetActive(true);
+                _cameras[_currCameraIndex].gameObject.SetActive(false);
                 _currCameraIndex = (_currCameraIndex + 1) % _cameras.Length;
+                _cameras[_currCameraIndex].gameObject.SetActive(true);
                 _cameraSwitchTimer = 0.0f;
             }
         }
