@@ -94,6 +94,8 @@ namespace Fall_Friends.Controllers
                 if (_glowTimer > glowEffectDuration)
                     StopGlowEffect();
             }
+
+            transform.eulerAngles = Vector3.Scale(transform.eulerAngles, Vector3.up);
             
             base.Update();
         }

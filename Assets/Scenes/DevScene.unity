@@ -1241,6 +1241,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 521951887}
     - target: {fileID: 745427524, guid: 0df6fcb351a7f454292880bbbb2b9aee, type: 3}
+      propertyPath: MaxActiveSpeed
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 745427524, guid: 0df6fcb351a7f454292880bbbb2b9aee, type: 3}
       propertyPath: groundCheckRadius
       value: 0.3
       objectReference: {fileID: 0}
