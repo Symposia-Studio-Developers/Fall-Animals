@@ -13,6 +13,8 @@ namespace Fall_Friends.Manager
         public float PowerCoefficient = 1.0f;
         public GameObject players;
 
+        public Camera CurrentCamera => _cameras[_currCameraIndex];
+
         [SerializeField] private string[] defaultIcons;
         [SerializeField] GameObject wssvGameObject;
         WebSocketServer webSocketServer;

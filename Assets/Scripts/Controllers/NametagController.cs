@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.IO;
+using Fall_Friends.Manager;
 using Helpers;
 using TMPro;
 using UnityEngine;
@@ -29,6 +30,7 @@ namespace Fall_Friends.Controllers
 
         private void Update()
         {
+            _camera = GameManager.Instance.CurrentCamera;
             transform.LookAt(_camera.transform);
             Vector3 rotation = transform.eulerAngles;
             //Vector3 worldPosition = transform.position;

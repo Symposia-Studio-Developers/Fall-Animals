@@ -430,7 +430,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 80
+  m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!136 &1802765431
 CapsuleCollider:
@@ -472,10 +472,11 @@ MonoBehaviour:
   MaxFreezeTime: 3
   PushCoolDown: 2
   PullCoolDown: 2
+  glowEffectDuration: 10
   SkinColors:
   - {fileID: 2100000, guid: 4532df46a68e70446bdf9659b47d9046, type: 2}
-  - {fileID: 2100000, guid: 4e45e548715621542acec76aeae29254, type: 2}
-  - {fileID: 2100000, guid: fb37e9b99056bbd4e90f97f8457518b7, type: 2}
+  - {fileID: 2100000, guid: 4532df46a68e70446bdf9659b47d9046, type: 2}
+  - {fileID: 2100000, guid: 4532df46a68e70446bdf9659b47d9046, type: 2}
   SkinGlows:
   - {fileID: 2100000, guid: 0d7fbc8a9fa8b0344b1a3b3c923aa29d, type: 2}
   - {fileID: 2100000, guid: 3e594466c2f41064e8bded20fa8f21f3, type: 2}
