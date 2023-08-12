@@ -90,7 +90,17 @@ public class PlayerManager : MonoBehaviour
         var data = new { playerIds = playerIds };
         return JsonConvert.SerializeObject(data);
     }
-    
+
+    public void Restart()
+    {
+        foreach (DemoPlayer player in playerDatas)
+        {
+            GameObject playerGo = GameObject.Find(player.GetPlayerId());
+            Destroy(playerGo);
+        }
+        playerDatas.Clear();
+    }
+
     public void rankPlayers()
     {
         for (int i = 0; i < playerDatas.Count; i++) {

@@ -318,9 +318,9 @@ namespace Fall_Friends.Controllers
             trans.localScale = trans.localScale * multiple;
         }
 
-        public int getScore() {
+        public float getScore() {
             // method to calculate score from player's status
-            return 0;
+            return GetComponent<Rigidbody>().mass;
         }
         #endregion
     }

@@ -33,7 +33,11 @@ namespace Fall_Friends.Manager
         [SerializeField] private float _timePerRound;
         [SerializeField] private TextMeshProUGUI _remainingTime;
         [SerializeField] private Slider _visualTimer;
+        [SerializeField] private GameObject _gameEndPanel;
+        [SerializeField] private TextMeshProUGUI[] _names;
+        [SerializeField] private RawImage[] _icons;
         private float _timer;
+        private bool _timerOn = true;
 
 
         // Call the base class Awake method to ensure the Singleton is set up correctly
@@ -50,11 +54,11 @@ namespace Fall_Friends.Manager
         public void ChangeLeader(DemoPlayer NewLeader)
         {
             CurrentLeader = NewLeader;
-            StartCoroutine(LoadIcon(NewLeader.GetPlayerId()));
+            StartCoroutine(LoadIcon(NewLeader.GetPlayerId(), LeaderIcon));
             LeaderLatestMessage.text = "";
         }
 
-        private IEnumerator LoadIcon(string playerID)
+        private IEnumerator LoadIcon(string playerID, RawImage img)
         {
             string URL = Path.Join(Application.persistentDataPath, playerID + ".png");
             UnityWebRequest www = UnityWebRequestTexture.GetTexture(URL);
@@ -70,7 +74,7 @@ namespace Fall_Friends.Manager
             else
             {
                 Texture2D texture = DownloadHandlerTexture.GetContent(www);
-                LeaderIcon.texture = texture;
+                img.texture = texture;
             }
         }
 
@@ -140,16 +144,60 @@ namespace Fall_Friends.Manager
                 _cameraSwitchTimer = 0.0f;
             }
 
-            _timer += Time.deltaTime;
-            if (_timer > _timePerRound)
+            if (_timerOn)
+            {
+                _timer += Time.deltaTime;
+            }
+            if (_timer > _timePerRound && _timerOn)
             {
                 // Add Round End Logic here.
+                StartCoroutine(GameEnd());
             }
-            else
+            else if (_timerOn)
             {
                 _remainingTime.text = (300 - _timer).ToString("F0");
                 _visualTimer.value = (300 - _timer) / 300;
             }
+        }
+
+        private IEnumerator GameEnd()
+        {
+            Debug.Log("Game end.");
+            _timerOn = false;
+            PlayerManager manager = players.GetComponent<PlayerManager>();
+            manager.rankPlayers();
+            for (int i = 0; i < 3; i++)
+            {
+                _names[i].text = "";
+                _icons[i].texture = null;
+                if (i >= manager.playerDatas.Count)
+                {
+                    break;
+                }
+                else
+                {
+                    _names[i].text = manager.playerDatas[i].GetPlayerId();
+                    StartCoroutine(LoadIcon(manager.playerDatas[i].GetPlayerId(), _icons[i]));
+                }
+            }
+
+            yield return new WaitForSeconds(3f);
+            _gameEndPanel.SetActive(true);
+
+            yield return new WaitForSeconds(15f);
+
+            Restart();
+
+            _gameEndPanel.SetActive(false);
+        }
+
+        private void Restart()
+        {
+            players.GetComponent<PlayerManager>().Restart();
+            _timer = 0.0f;
+            CurrentLeader = null;
+            LeaderLatestMessage.text = "";
+            _timerOn = true;
         }
     }
 }
