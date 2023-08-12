@@ -1,9 +1,13 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.IO;
+using Fall_Friends.Controllers;
 using Helpers;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.UI;
 
 namespace Fall_Friends.Manager
 {
@@ -14,6 +18,9 @@ namespace Fall_Friends.Manager
         public GameObject players;
 
         public Camera CurrentCamera => _cameras[_currCameraIndex];
+        public DemoPlayer CurrentLeader = null;
+        public TextMeshProUGUI LeaderLatestMessage;
+        public RawImage LeaderIcon;
 
         [SerializeField] private string[] defaultIcons;
         [SerializeField] GameObject wssvGameObject;
@@ -23,6 +30,10 @@ namespace Fall_Friends.Manager
         private int _currCameraIndex = 0;
         [SerializeField] private float[] _cameraTime;
         [SerializeField] private Camera[] _cameras;
+        [SerializeField] private float _timePerRound;
+        [SerializeField] private TextMeshProUGUI _remainingTime;
+        [SerializeField] private Slider _visualTimer;
+        private float _timer;
 
 
         // Call the base class Awake method to ensure the Singleton is set up correctly
@@ -33,6 +44,33 @@ namespace Fall_Friends.Manager
             if (webSocketServer == null)
             {
                 Debug.LogError("WebSocketServer component not found on the assigned GameObject.");
+            }
+        }
+
+        public void ChangeLeader(DemoPlayer NewLeader)
+        {
+            CurrentLeader = NewLeader;
+            StartCoroutine(LoadIcon(NewLeader.GetPlayerId()));
+            LeaderLatestMessage.text = "";
+        }
+
+        private IEnumerator LoadIcon(string playerID)
+        {
+            string URL = Path.Join(Application.persistentDataPath, playerID + ".png");
+            UnityWebRequest www = UnityWebRequestTexture.GetTexture(URL);
+
+            yield return www.SendWebRequest();
+
+            if (www.result == UnityWebRequest.Result.ConnectionError ||
+                www.result == UnityWebRequest.Result.ProtocolError ||
+                www.result == UnityWebRequest.Result.DataProcessingError)
+            {
+                Debug.Log("An error occured when loading texture data from persistent data path: " + www.error);
+            }
+            else
+            {
+                Texture2D texture = DownloadHandlerTexture.GetContent(www);
+                LeaderIcon.texture = texture;
             }
         }
 
@@ -69,6 +107,10 @@ namespace Fall_Friends.Manager
                     else if (currRequest.action == "sendDanmu")
                     {
                         Debug.Log(currRequest.playerId + ": Send dan mu: " + currRequest.danmu);
+                        if (currRequest.playerId == CurrentLeader.GetPlayerId())
+                        {
+                            LeaderLatestMessage.text = currRequest.danmu;
+                        }
                         // add code here
                     }
                     else if (currRequest.action == "addBot")
@@ -96,6 +138,17 @@ namespace Fall_Friends.Manager
                 _currCameraIndex = (_currCameraIndex + 1) % _cameras.Length;
                 _cameras[_currCameraIndex].gameObject.SetActive(true);
                 _cameraSwitchTimer = 0.0f;
+            }
+
+            _timer += Time.deltaTime;
+            if (_timer > _timePerRound)
+            {
+                // Add Round End Logic here.
+            }
+            else
+            {
+                _remainingTime.text = (300 - _timer).ToString("F0");
+                _visualTimer.value = (300 - _timer) / 300;
             }
         }
     }

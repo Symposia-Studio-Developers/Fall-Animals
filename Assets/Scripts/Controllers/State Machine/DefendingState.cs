@@ -95,9 +95,13 @@ public class DefendingState : BaseState
     }
 
     private void GainMass() {
-        _rb.mass = _rb.mass * 1.0001f;
+        _rb.mass = _rb.mass * 1.00005f;
         var trans = _rb.transform;
-        trans.localScale = trans.localScale * 1.0001f;
+        trans.localScale = trans.localScale * 1.00005f;
+        if (GameManager.Instance.CurrentLeader == null || trans.localScale.x > GameManager.Instance.CurrentLeader.transform.localScale.x)
+        {
+            GameManager.Instance.ChangeLeader(_rb.GetComponent<DemoPlayer>());
+        }
     }
 
     private void MoveToCenter() {
