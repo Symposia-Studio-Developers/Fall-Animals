@@ -22,10 +22,10 @@ namespace Fall_Friends.Manager
         public TextMeshProUGUI LeaderLatestMessage;
         public RawImage LeaderIcon;
 
-        [SerializeField] private string[] defaultIcons;
+        [SerializeField] private int totalIconCount;
         [SerializeField] GameObject wssvGameObject;
         WebSocketServer webSocketServer;
-        private int iconCount = 0;
+        private int iconCount = 1;
         private float _cameraSwitchTimer;
         private int _currCameraIndex = 0;
         [SerializeField] private float[] _cameraTime;
@@ -125,7 +125,8 @@ namespace Fall_Friends.Manager
                     else if (currRequest.action == "addPlayerSC")
                     {
                         Debug.Log(currRequest.playerId + ": Add bot through SC");
-                        players.GetComponent<PlayerManager>().addNewPlayer(currRequest.playerId, defaultIcons[iconCount++ % defaultIcons.Length]);
+                        players.GetComponent<PlayerManager>().addNewPlayer(currRequest.playerId, Path.Join(Application.streamingAssetsPath, (iconCount++ % totalIconCount).ToString() + ".webp"));
+                        Debug.Log(Path.Join(Application.streamingAssetsPath, (iconCount % totalIconCount).ToString() + ".webp"));
                     }
                     else if (currRequest.action == "deletePlayer")
                     {
