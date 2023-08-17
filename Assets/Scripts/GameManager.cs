@@ -78,6 +78,17 @@ namespace Fall_Friends.Manager
             }
         }
 
+        private void Start()
+        {
+            string[] initBotNames = new[] {"Cheese", "TT", "Angela", "LittleFatty", "Kevin"};
+
+            PlayerManager pm = players.GetComponent<PlayerManager>();
+
+            for (int i = 0; i < initBotNames.Length; i++)
+            {
+                pm.addNewPlayer(initBotNames[i], Path.Join(Application.streamingAssetsPath, (iconCount++ % totalIconCount).ToString() + ".webp"), true);
+            }
+        }
 
         private void Update()
         {
@@ -124,9 +135,7 @@ namespace Fall_Friends.Manager
                     }
                     else if (currRequest.action == "addPlayerSC")
                     {
-                        Debug.Log(currRequest.playerId + ": Add bot through SC");
                         players.GetComponent<PlayerManager>().addNewPlayer(currRequest.playerId, Path.Join(Application.streamingAssetsPath, (iconCount++ % totalIconCount).ToString() + ".webp"));
-                        Debug.Log(Path.Join(Application.streamingAssetsPath, (iconCount % totalIconCount).ToString() + ".webp"));
                     }
                     else if (currRequest.action == "deletePlayer")
                     {

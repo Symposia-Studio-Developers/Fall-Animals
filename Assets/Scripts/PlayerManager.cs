@@ -25,7 +25,7 @@ public class PlayerManager : MonoBehaviour
         
     }
     
-    public void addNewPlayer(string playerId, string iconURL)
+    public void addNewPlayer(string playerId, string iconURL, bool isBot = false)
     {
         float xPosition = Random.Range(-9.0f, 9.0f);
         float zPosition = Random.Range(-9.0f, 9.0f);
@@ -38,6 +38,7 @@ public class PlayerManager : MonoBehaviour
         playerData.IsActive = true;
         playerData.SetPlayerId(playerId);
         playerData.SetSkinColorIndex(nextSkinColorIndex);
+        playerData.IsBot = isBot;
         nextSkinColorIndex = (nextSkinColorIndex + 1) % skinColorCount;
         playerDatas.Add(playerData);
     }

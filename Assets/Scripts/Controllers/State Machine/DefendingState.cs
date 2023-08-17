@@ -43,7 +43,8 @@ public class DefendingState : BaseState
         
         MoveToCenter();
 
-        GainMass();
+        if (!actor.IsBot)
+            GainMass();
 
         Push();
         
