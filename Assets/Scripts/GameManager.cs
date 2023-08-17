@@ -36,6 +36,7 @@ namespace Fall_Friends.Manager
         [SerializeField] private GameObject _gameEndPanel;
         [SerializeField] private TextMeshProUGUI[] _names;
         [SerializeField] private RawImage[] _icons;
+        [SerializeField] private string[] _initBotNames = new[] {"Cheese", "TT", "Angela", "LittleFatty", "Kevin"};
         private float _timer;
         private bool _timerOn = true;
 
@@ -80,13 +81,17 @@ namespace Fall_Friends.Manager
 
         private void Start()
         {
-            string[] initBotNames = new[] {"Cheese", "TT", "Angela", "LittleFatty", "Kevin"};
+            InitBots();
+        }
+
+        private void InitBots()
+        {
 
             PlayerManager pm = players.GetComponent<PlayerManager>();
 
-            for (int i = 0; i < initBotNames.Length; i++)
+            for (int i = 0; i < _initBotNames.Length; i++)
             {
-                pm.addNewPlayer(initBotNames[i], Path.Join(Application.streamingAssetsPath, (iconCount++ % totalIconCount).ToString() + ".webp"), true);
+                pm.addNewPlayer(_initBotNames[i], Path.Join(Application.streamingAssetsPath, (iconCount++ % totalIconCount).ToString() + ".webp"), true);
             }
         }
 
@@ -208,6 +213,7 @@ namespace Fall_Friends.Manager
             CurrentLeader = null;
             LeaderLatestMessage.text = "";
             _timerOn = true;
+            InitBots();
         }
     }
 }
