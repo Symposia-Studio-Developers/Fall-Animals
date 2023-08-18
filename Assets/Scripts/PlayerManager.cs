@@ -27,6 +27,13 @@ public class PlayerManager : MonoBehaviour
     
     public void addNewPlayer(string playerId, string iconURL, bool isBot = false)
     {
+        foreach (DemoPlayer player in playerDatas)
+        {
+            if (player.GetPlayerId() == playerId)
+            {
+                return;
+            }
+        }
         float xPosition = Random.Range(-9.0f, 9.0f);
         float zPosition = Random.Range(-9.0f, 9.0f);
         float yPosition = Random.Range(1.0f, 3.0f);
@@ -96,7 +103,7 @@ public class PlayerManager : MonoBehaviour
     {
         foreach (DemoPlayer player in playerDatas)
         {
-            GameObject playerGo = GameObject.Find(player.GetPlayerId());
+            GameObject playerGo = player.gameObject;
             Destroy(playerGo);
         }
         playerDatas.Clear();
