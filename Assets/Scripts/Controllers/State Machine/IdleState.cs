@@ -21,7 +21,7 @@ public class IdleState : BaseState
 
     public override Type Tick()
     {
-        if (actor.OnMiddleGround)
+        if (actor.OnMiddleGround && actor.IsActive)
             return typeof(DefendingState);
         if (actor.IsActive)
             return typeof(DashingState);

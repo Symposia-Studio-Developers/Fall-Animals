@@ -332,10 +332,10 @@ namespace Fall_Friends.Controllers
 
         public void ResetTimer()
         {
+            _likeElapsedTimer = 0f;
+            IsActive = true;
             if (CurrentState == "IdleState")
             {
-                _likeElapsedTimer = 0f;
-                IsActive = true;
                 SwitchState(typeof(DashingState));
             }
         }
