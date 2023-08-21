@@ -16,6 +16,7 @@ namespace Fall_Friends.Controllers
         private DemoPlayer _demoPlayer;
         [SerializeField] private TextMeshPro _nametag;
         [SerializeField] private RawImage _icon;
+        [SerializeField] private Slider _hpBar;
 
         public void ApplyIcon(string URL, string playerID)
         {
@@ -44,6 +45,8 @@ namespace Fall_Friends.Controllers
             {
                 _nametag.text = _demoPlayer.GetPlayerId();
             }
+
+            _hpBar.value = _demoPlayer.GetTimerPartition();
         }
         
         private IEnumerator DownloadAndReplaceIcon(string URL, string playerID)

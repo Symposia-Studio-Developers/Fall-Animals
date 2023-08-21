@@ -27,7 +27,9 @@ public class FrozenState : BaseState
     {
         elapsedFreezeTime += Time.deltaTime;
         if (elapsedFreezeTime > freezeTimer)
+        {
             return typeof(IdleState); // if maximum frozen time achieved, switch back to Idle State
+        }
         return null;
     }
 }

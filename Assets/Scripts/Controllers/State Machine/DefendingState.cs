@@ -29,6 +29,10 @@ public class DefendingState : BaseState
         this.pushRadius = pushRadius;
         this._rb = actor.GetComponent<Rigidbody>();
         this.speed = speed;
+        if (actor.IsBot)
+        {
+            this.pushTimer *= 2;
+        }
     }
 
     public override void OnEnter()

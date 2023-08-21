@@ -20,18 +20,11 @@ public class IdleState : BaseState
     }
 
     public override Type Tick()
-    {       
-        if (actor.IsBot) {
-            if (actor.Grounded) {
-                _idleToDashTimer += Time.deltaTime;
-                if (_idleToDashTimer > _idleToDashCoolDown) {
-                    return typeof(DashingState);
-                }
-            }
-        }
-
+    {
         if (actor.OnMiddleGround)
             return typeof(DefendingState);
+        if (actor.IsActive)
+            return typeof(DashingState);
         return null;
     }
     

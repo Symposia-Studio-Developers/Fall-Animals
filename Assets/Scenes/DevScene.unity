@@ -1023,6 +1023,12 @@ MonoBehaviour:
   - {fileID: 441897473}
   - {fileID: 1229478130}
   - {fileID: 1976234757}
+  _initBotNames:
+  - Cheese
+  - TT
+  - Angela
+  - LittleFatty
+  - Kevin
 --- !u!4 &549904171
 Transform:
   m_ObjectHideFlags: 0
@@ -1480,7 +1486,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 44.75
+  m_fontSize: 22.05
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
