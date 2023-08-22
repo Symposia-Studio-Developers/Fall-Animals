@@ -1029,6 +1029,7 @@ MonoBehaviour:
   - Angela
   - LittleFatty
   - Kevin
+  BotGenerationChance: 0.05
 --- !u!4 &549904171
 Transform:
   m_ObjectHideFlags: 0

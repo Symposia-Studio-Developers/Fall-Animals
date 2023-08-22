@@ -125,6 +125,11 @@ public class WebSocketServer : MonoBehaviour
                         Debug.Log("Player: " + newRequest.playerId + " sent gift: " + newRequest.giftName + " x " + newRequest.repeatCount);
                     }
 
+                    if (newRequest.action == "audienceJoinRoom")
+                    {
+                        Debug.Log($"New audience {newRequest.playerId} just joined the live room.");
+                    }
+
                     myRequestQueue.Enqueue(newRequest);
                 }
                 else

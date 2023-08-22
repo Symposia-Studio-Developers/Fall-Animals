@@ -39,7 +39,7 @@ namespace Fall_Friends.Controllers
         #region Variables for Bot
         [Header("Bot")]
         public bool IsBot = false;
-        public float IdleToDashCoolDown = 3.0f; 
+        public float IdleToDashCoolDown = 3.0f;
         
         private float _idleToDashTimer = 0.0f;
 

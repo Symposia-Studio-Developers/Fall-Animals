@@ -8,6 +8,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 namespace Fall_Friends.Manager
 {
@@ -39,6 +40,9 @@ namespace Fall_Friends.Manager
         [SerializeField] private string[] _initBotNames = new[] {"Cheese", "TT", "Angela", "LittleFatty", "Kevin"};
         private float _timer;
         private bool _timerOn = true;
+        
+        [Tooltip("Value should between 0 - 1, 0 means no bot will generate; 1 means generate a bot for every enter live room watcher.")]
+        public float BotGenerationChance = 0.05f;
 
 
         // Call the base class Awake method to ensure the Singleton is set up correctly
@@ -147,6 +151,15 @@ namespace Fall_Friends.Manager
                         Debug.Log(currRequest.playerId + ": Delete Player");
                         players.GetComponent<PlayerManager>().deletePlayer(currRequest.playerId);
                     }
+                    else if (currRequest.action == "audienceJoinRoom")
+                    {
+                        if (Random.value < BotGenerationChance)
+                        {
+                            Debug.Log($"One bot is initializing by {currRequest.playerId}'s enter!");
+                            PlayerManager pm = players.GetComponent<PlayerManager>();
+                            pm.addNewPlayer(GenerateRandomName(), Path.Join(Application.streamingAssetsPath, (iconCount++ % totalIconCount).ToString() + ".webp"), true);
+                        }
+                    }
                 }
             }
 
@@ -173,6 +186,18 @@ namespace Fall_Friends.Manager
                 _remainingTime.text = (300 - _timer).ToString("F0");
                 _visualTimer.value = (300 - _timer) / 300;
             }
+        }
+
+        private string GenerateRandomName()
+        {
+            const string glyph = "abcdefghijklmnopqrstuvwxyz0123456789";
+            int length = Random.Range(1, 7);
+            string result = "";
+            for (int i = 0; i < length; i++)
+            {
+                result += glyph[Random.Range(0, 36)];
+            }
+            return result;
         }
 
         private IEnumerator GameEnd()
