@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Fall_Friends.Controllers;
 using System.Linq;
+using Fall_Friends.Manager;
 using Newtonsoft.Json;
 
 public class PlayerManager : MonoBehaviour
@@ -48,6 +49,7 @@ public class PlayerManager : MonoBehaviour
         playerData.IsBot = isBot;
         nextSkinColorIndex = (nextSkinColorIndex + 1) % skinColorCount;
         playerDatas.Add(playerData);
+        GameManager.Instance.GameNews.text = $"{playerId} just joined the game!";
     }
 
     public void deletePlayer(string playerId)
@@ -56,6 +58,7 @@ public class PlayerManager : MonoBehaviour
         if (playerToDestroy){
             Destroy(playerToDestroy.gameObject);
             Debug.Log("player gameobject destroyed");
+            GameManager.Instance.GameNews.text = $"{playerId} just be kicked out of the stage!!!";
         }
         for (int i = 0; i < playerDatas.Count; i++) {
             if (playerDatas[i].GetPlayerId() == playerId) playerDatas.RemoveAt(i);

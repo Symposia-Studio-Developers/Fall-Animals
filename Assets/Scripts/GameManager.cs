@@ -22,6 +22,7 @@ namespace Fall_Friends.Manager
         public DemoPlayer CurrentLeader = null;
         public TextMeshProUGUI LeaderLatestMessage;
         public RawImage LeaderIcon;
+        public TextMeshProUGUI GameNews;
 
         [SerializeField] private int totalIconCount;
         [SerializeField] GameObject wssvGameObject;

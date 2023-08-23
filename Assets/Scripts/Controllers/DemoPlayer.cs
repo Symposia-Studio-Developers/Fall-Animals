@@ -135,6 +135,14 @@ namespace Fall_Friends.Controllers
 
         #region Collision Functions
 
+        private void OnCollisionEnter(Collision other)
+        {
+            if (other.gameObject.CompareTag("DeathZone"))
+            {
+                GameManager.Instance.players.GetComponent<PlayerManager>().deletePlayer(_playerId);
+            }
+        }
+
         private void OnCollisionStay(Collision other)
         {
             if (other.gameObject.CompareTag("Ring"))

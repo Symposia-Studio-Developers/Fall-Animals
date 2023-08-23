@@ -8,6 +8,7 @@ TagManager:
   - MiddleGround
   - Ring
   - Edge
+  - DeathZone
   layers:
   - Default
   - TransparentFX
